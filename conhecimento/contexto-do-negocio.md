@@ -27,6 +27,8 @@ Informado pelo usuário em 2026-10-04.
 
 Vendas **somente via PIX** (confirmado pelo usuário) — a taxa acima vale para 100% das vendas.
 
+**Prazo de saque: D0** (o dinheiro da venda fica disponível no mesmo dia).
+
 ## Comissão líquida (PIX)
 
 **R$ 27,90 − R$ 2,00 = R$ 25,90 por venda.** É o "valor da comissão" usado nas regras de `aula-facebook-ads-2026.md`:
@@ -56,5 +58,7 @@ Vendas **somente via PIX** (confirmado pelo usuário) — a taxa acima vale para
 | Testes de criativo | R$ 86,30 por rodada de 5 criativos | R$ 520 (~6 rodadas, ~30 criativos) |
 | Testes de estrutura | R$ 155,40 por criativo aprovado | R$ 470 (~3 aprovados) |
 | Escala | R$ 466,20/dia por estrutura campeã (6 × R$ 77,70) | R$ 880 |
+
+Com saque D0, a escala lucrativa se paga no mesmo dia; a reserva de escala serve de colchão para dias em que o CPA sobe acima de R$ 25,90, não para financiar a escala inteira.
 
 Ponto de parada: **0 vendas após ~R$ 300 gastos no total** → parar de testar criativos e revisar oferta/página/pixel/checkout PIX (mesmo com CPA de R$ 60, a chance de zero vendas em R$ 300 seria < 1%).
