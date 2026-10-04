@@ -25,7 +25,7 @@ Informado pelo usuário em 2026-10-04.
 | R$ 45,01 – 50,00 | R$ 2,50 |
 | acima de R$ 50,00 | R$ 1,49 + 4,99% |
 
-Taxas de cartão/boleto: não informadas.
+Vendas **somente via PIX** (confirmado pelo usuário) — a taxa acima vale para 100% das vendas.
 
 ## Comissão líquida (PIX)
 
@@ -37,10 +37,11 @@ Taxas de cartão/boleto: não informadas.
 | Teste de estrutura (1-1-1, 1-3-1, 1-5-1) | comissão cheia por dia | **R$ 25,90/dia** |
 | Escala (6 duplicações) | mínimo 3× a comissão | **R$ 77,70/dia** por campanha |
 
-- **CPA de equilíbrio:** R$ 25,90 (acima disso cada venda dá prejuízo, sem contar impostos sobre o gasto de anúncio).
+- **CPA de equilíbrio:** R$ 25,90 (acima disso cada venda dá prejuízo, sem contar eventuais impostos sobre o gasto de anúncio).
 - **ROAS de equilíbrio:** 27,90 ÷ 25,90 ≈ **1,08**.
 - Critério "3 vendas em 2 dias" com R$ 8,63/dia → CPA ≤ **R$ 5,75**.
 
 ## Histórico
 
 - 2026-10-04: teste CBO 1-1-1 iniciado com 7 criativos (AD1–AD4 vídeo, AD5–AD7 imagem) a **R$ 13/dia** cada (acima do 1/3 da comissão). AD3 e AD4 pausadas no mesmo dia. Vídeos sem texto principal; imagens com copy.
+- 2026-10-04 (tarde): **0 vendas** no 1º dia do teste.
