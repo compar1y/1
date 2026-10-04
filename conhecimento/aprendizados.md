@@ -17,9 +17,9 @@ Formato: **Hipótese → O que foi feito → Resultado (números) → Aprendizad
   3. **Connect rate de 65% (17 de 26 cliques), mas inconclusivo.** PageSpeed do site = 99 e pixel instalado no `<head>` (padrão do template), então velocidade não explica. Com 26 cliques a margem de erro vai de ~46% a ~81%; os 100% de AD3/AD4 vieram de 3 e 1 cliques (ruído). Suspeita: cliques acidentais em Reels/Stories. Verificar com detalhamento por posicionamento quando houver mais volume.
   4. **O teste misturou variáveis:** vídeos sem texto principal × imagens com texto.
   5. **Orçamento acima da regra da aula:** R$ 13 em vez de 1/3 da comissão (R$ 8,63).
+  6. **No template da página, o evento IC dispara no clique do botão de compra** (antes do checkout da Wiapy), não quando o checkout é de fato aberto/preenchido.
 - **Levar para os próximos testes:**
   - Conferir **antes** de subir anúncios: PageSpeed (celular), pixel no `<head>`, pixel registrando a compra, checkout testado com uma compra real.
   - Calcular o **CPA de equilíbrio** e a **conversão necessária da página** antes de escolher a oferta/preço.
   - Mudar **uma variável por vez** entre os criativos (mesmo texto, mesmo público, mesma página).
-  6. **No template da página, o evento IC dispara no clique do botão de compra** (antes do checkout da Wiapy), não quando o checkout é de fato aberto/preenchido.
 - **Resultado do dia 2:** _pendente_
