@@ -45,3 +45,16 @@ Vendas **somente via PIX** (confirmado pelo usuário) — a taxa acima vale para
 
 - 2026-10-04: teste CBO 1-1-1 iniciado com 7 criativos (AD1–AD4 vídeo, AD5–AD7 imagem) a **R$ 13/dia** cada (acima do 1/3 da comissão). AD3 e AD4 pausadas no mesmo dia. Vídeos sem texto principal; imagens com copy.
 - 2026-10-04 (tarde): **0 vendas** no 1º dia do teste.
+
+## Caixa disponível
+
+**R$ 2.000** para tráfego (informado em 2026-10-04). Plano de distribuição proposto (adaptação do agente, não da aula):
+
+| Fase | Custo unitário | Reserva |
+|---|---|---|
+| Teste atual (5 ativos × R$ 13 × 2 dias) | — | ~R$ 130 |
+| Testes de criativo | R$ 86,30 por rodada de 5 criativos | R$ 520 (~6 rodadas, ~30 criativos) |
+| Testes de estrutura | R$ 155,40 por criativo aprovado | R$ 470 (~3 aprovados) |
+| Escala | R$ 466,20/dia por estrutura campeã (6 × R$ 77,70) | R$ 880 |
+
+Ponto de parada: **0 vendas após ~R$ 300 gastos no total** → parar de testar criativos e revisar oferta/página/pixel/checkout PIX (mesmo com CPA de R$ 60, a chance de zero vendas em R$ 300 seria < 1%).
