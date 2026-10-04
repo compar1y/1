@@ -47,6 +47,7 @@ Vendas **somente via PIX** (confirmado pelo usuário) — a taxa acima vale para
 
 - 2026-10-04: teste CBO 1-1-1 iniciado com 7 criativos (AD1–AD4 vídeo, AD5–AD7 imagem) a **R$ 13/dia** cada (acima do 1/3 da comissão). AD3 e AD4 pausadas no mesmo dia. Vídeos sem texto principal; imagens com copy.
 - 2026-10-04: **R$ 82 gastos, 0 vendas** no 1º dia do teste (acumulado do caixa: R$ 82 de R$ 2.000; ponto de parada em R$ 300).
+- 2026-10-04 (print do Gerenciador, `dados/2026-10-04-teste-criativos.csv`): R$ 72,12 · 914 impressões · CPM R$ 78,91 · 26 cliques no link · connect rate 65% · custo por LPV R$ 4,24 · 1 IC (AD1) · 0 compras. AD3 e AD4 pausados.
 
 ## Caixa disponível
 
