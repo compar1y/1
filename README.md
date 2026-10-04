@@ -29,3 +29,4 @@ Para ver dia a dia uma campanha (ex.: validar "3 vendas em 2 dias"): `--agrupar 
 ## Material de estudo carregado
 
 - `conhecimento/aula-facebook-ads-2026.md` — métricas e referências, teste de criativos (ABO método baiano e CBO), teste de estrutura e escala.
+- `conhecimento/contexto-do-negocio.md` — oferta, preço, taxas da plataforma e orçamentos calculados.
