@@ -5,6 +5,7 @@ Uso:
     python3 scripts/analisar_metricas.py dados/arquivo.csv
     python3 scripts/analisar_metricas.py dados/arquivo.csv --agrupar campanha --ordenar roas
     python3 scripts/analisar_metricas.py dados/arquivo.csv --json
+    python3 scripts/analisar_metricas.py dados/arquivo.csv --agrupar dia --filtrar "Criativo A"
 
 Reconhece colunas em português e inglês e aceita CSV separado por vírgula ou
 ponto e vírgula, com decimais no formato 1234.56 ou 1.234,56. Só usa a
@@ -25,6 +26,7 @@ ALIASES = {
     "campanha": ["nome da campanha", "campanha", "campaign name", "campaign"],
     "conjunto": ["nome do conjunto de anuncios", "conjunto de anuncios", "ad set name", "ad set"],
     "anuncio": ["nome do anuncio", "anuncio", "ad name", "ad"],
+    "dia": ["dia", "day"],
     "gasto": ["valor usado", "valor gasto", "gasto", "amount spent", "spend"],
     "impressoes": ["impressoes", "impressions"],
     "alcance": ["alcance", "reach"],
@@ -37,11 +39,23 @@ ALIASES = {
         "3 second video plays",
         "video plays at 3s",
     ],
+    "video_plays": ["reproducoes de video", "video plays"],
+    "video_p75": [
+        "reproducoes do video ate 75",
+        "reproducoes de video ate 75",
+        "reproducoes do video em 75",
+        "video plays at 75",
+    ],
     "thruplay": ["thruplays", "thruplay", "reproducoes thruplay"],
     "resultados": ["resultados", "results"],
     "leads": ["leads", "cadastros"],
     "add_carrinho": ["adicoes ao carrinho", "adds to cart"],
-    "checkout": ["finalizacoes de compra iniciadas", "checkouts initiated"],
+    "checkout": [
+        "finalizacoes de compra iniciadas",
+        "finalizacoes da compra iniciadas",
+        "checkouts initiated",
+        "initiate checkout",
+    ],
     "compras": ["compras", "purchases"],
     "valor_compras": [
         "valor de conversao de compras",
@@ -50,7 +64,7 @@ ALIASES = {
     ],
 }
 
-NIVEIS = ["anuncio", "conjunto", "campanha"]
+NIVEIS = ["anuncio", "conjunto", "campanha", "dia"]
 SOMAVEIS = [k for k in ALIASES if k not in NIVEIS]
 
 # (chave, rótulo, formato) na ordem em que aparecem no relatório.
@@ -60,14 +74,17 @@ METRICAS = [
     ("cpm", "CPM", "moeda"),
     ("frequencia", "Freq.", "dec"),
     ("hook_rate", "Hook%", "pct"),
+    ("body_rate", "Body%", "pct"),
     ("hold_rate", "Hold%", "pct"),
     ("ctr_link", "CTR link%", "pct"),
     ("ctr_todos", "CTR todos%", "pct"),
     ("cpc_link", "CPC link", "moeda"),
-    ("taxa_lpv", "Carreg.%", "pct"),
+    ("taxa_lpv", "Connect%", "pct"),
     ("custo_lpv", "Custo LPV", "moeda"),
     ("resultados", "Result.", "int"),
     ("custo_resultado", "Custo/Res.", "moeda"),
+    ("checkout", "IC", "int"),
+    ("custo_ic", "Custo/IC", "moeda"),
     ("leads", "Leads", "int"),
     ("cpl", "CPL", "moeda"),
     ("taxa_resultado", "Res./LPV%", "pct"),
@@ -174,6 +191,7 @@ def calcular(linhas):
     m["cpm"] = razao(linhas, "gasto", "impressoes", 1000)
     m["frequencia"] = razao(linhas, "impressoes", "alcance")
     m["hook_rate"] = razao(linhas, "video_3s", "impressoes", 100)
+    m["body_rate"] = razao(linhas, "video_p75", "video_plays", 100)
     m["hold_rate"] = razao(linhas, "thruplay", "video_3s", 100)
     m["ctr_link"] = razao(linhas, "cliques_link", "impressoes", 100)
     m["ctr_todos"] = razao(linhas, "cliques_todos", "impressoes", 100)
@@ -182,6 +200,7 @@ def calcular(linhas):
     m["custo_lpv"] = 1 / v if (v := razao(linhas, "lpv", "gasto")) else None
     m["custo_resultado"] = 1 / v if (v := razao(linhas, "resultados", "gasto")) else None
     m["taxa_resultado"] = razao(linhas, "resultados", "base_conv", 100)
+    m["custo_ic"] = 1 / v if (v := razao(linhas, "checkout", "gasto")) else None
     m["cpl"] = 1 / v if (v := razao(linhas, "leads", "gasto")) else None
     m["taxa_conversao"] = razao(linhas, "compras", "base_conv", 100)
     m["cpa"] = 1 / v if (v := razao(linhas, "compras", "gasto")) else None
@@ -233,20 +252,27 @@ def main():
     p.add_argument("csv", help="arquivo CSV exportado do Gerenciador de Anúncios")
     p.add_argument("--agrupar", choices=NIVEIS, help="nível de agrupamento (padrão: o mais detalhado disponível)")
     p.add_argument("--ordenar", default="gasto", help="métrica para ordenar, decrescente (padrão: gasto)")
+    p.add_argument("--filtrar", help="mantém só linhas cuja campanha, conjunto ou anúncio contém este texto")
     p.add_argument("--json", action="store_true", help="saída em JSON")
     args = p.parse_args()
 
     linhas, presentes, nao_reconhecidas = ler_csv(args.csv)
+    if args.filtrar:
+        alvo = args.filtrar.lower()
+        linhas = [l for l in linhas if any(alvo in (l.get(n) or "").lower() for n in NIVEIS[:3])]
     if not linhas:
-        sys.exit("CSV vazio ou sem linhas de dados.")
+        sys.exit("CSV vazio, sem linhas de dados ou nenhuma linha corresponde ao filtro.")
 
-    nivel = args.agrupar or next((n for n in NIVEIS if n in presentes), None)
+    nivel = args.agrupar or next((n for n in NIVEIS[:3] if n in presentes), None)
     if nivel and nivel not in presentes:
         sys.exit(f"O CSV não tem a coluna de '{nivel}'.")
 
     grupos = agrupar(linhas, nivel)
     resultados = [(nome, calcular(ls)) for nome, ls in grupos.items()]
-    resultados.sort(key=lambda r: (r[1].get(args.ordenar) is None, -(r[1].get(args.ordenar) or 0)))
+    if nivel == "dia":
+        resultados.sort(key=lambda r: r[0])
+    else:
+        resultados.sort(key=lambda r: (r[1].get(args.ordenar) is None, -(r[1].get(args.ordenar) or 0)))
 
     total = calcular(linhas)
 

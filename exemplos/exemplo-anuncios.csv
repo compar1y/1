@@ -1,6 +1,6 @@
-Nome da campanha,Nome do conjunto de anúncios,Nome do anúncio,Valor usado (BRL),Impressões,Alcance,Frequência,Cliques no link,Cliques (todos),Visualizações da página de destino,Reproduções de vídeo de 3 segundos,ThruPlays,Resultados,Compras,Valor de conversão de compras,Início dos relatórios,Término dos relatórios
-[VENDAS] Curso Madeira,Público Frio - Interesses,AD01 - Vídeo depoimento,850.40,42100,25300,1.66,610,1180,455,12630,3150,14,14,2772.00,2026-09-01,2026-09-30
-[VENDAS] Curso Madeira,Público Frio - Interesses,AD02 - Carrossel projetos,620.15,38900,24100,1.61,280,720,190,,,4,4,792.00,2026-09-01,2026-09-30
-[VENDAS] Curso Madeira,Público Frio - Aberto,AD03 - Vídeo antes e depois,1240.90,71200,39800,1.79,1150,2010,860,24920,5480,27,27,5346.00,2026-09-01,2026-09-30
-[VENDAS] Curso Madeira,Remarketing 30d,AD04 - Vídeo oferta,410.25,9800,2450,4.00,295,410,240,3920,1410,11,11,2178.00,2026-09-01,2026-09-30
-[LEADS] Ebook Grátis,Público Frio - Lookalike,AD05 - Imagem ebook,300.00,25400,18700,1.36,390,640,310,,,95,,,2026-09-01,2026-09-30
+Nome da campanha,Nome do conjunto de anúncios,Nome do anúncio,Valor usado (BRL),Impressões,Alcance,Frequência,Cliques no link,Cliques (todos),Visualizações da página de destino,Reproduções de vídeo de 3 segundos,Reproduções de vídeo,Reproduções do vídeo até 75%,ThruPlays,Resultados,Finalizações de compra iniciadas,Compras,Valor de conversão de compras,Início dos relatórios,Término dos relatórios
+[VENDAS] Curso Madeira,Público Frio - Interesses,AD01 - Vídeo depoimento,850.40,42100,25300,1.66,610,1180,455,12630,15840,760,3150,14,52,14,2772.00,2026-09-01,2026-09-30
+[VENDAS] Curso Madeira,Público Frio - Interesses,AD02 - Carrossel projetos,620.15,38900,24100,1.61,280,720,190,,,,,4,21,4,792.00,2026-09-01,2026-09-30
+[VENDAS] Curso Madeira,Público Frio - Aberto,AD03 - Vídeo antes e depois,1240.90,71200,39800,1.79,1150,2010,860,24920,30150,1810,5480,27,96,27,5346.00,2026-09-01,2026-09-30
+[VENDAS] Curso Madeira,Remarketing 30d,AD04 - Vídeo oferta,410.25,9800,2450,4.00,295,410,240,3920,4630,390,1410,11,29,11,2178.00,2026-09-01,2026-09-30
+[LEADS] Ebook Grátis,Público Frio - Lookalike,AD05 - Imagem ebook,300.00,25400,18700,1.36,390,640,310,,,,,95,,,,2026-09-01,2026-09-30

@@ -22,4 +22,10 @@ python3 scripts/analisar_metricas.py dados/arquivo.csv --agrupar campanha --orde
 python3 scripts/analisar_metricas.py dados/arquivo.csv --json
 ```
 
-Métricas calculadas: CPM, frequência, hook rate (3s/impressões), hold rate (ThruPlay/3s), CTR (link e todos), CPC (link), taxa de carregamento da página (LPV/cliques), custo por LPV, custo por resultado, CPL, taxa de conversão, CPA, ticket médio e ROAS.
+Métricas calculadas: CPM, frequência, hook rate (3s/impressões), body rate (75%/reproduções), hold rate (ThruPlay/3s), CTR (link e todos), CPC (link), connect rate (LPV/cliques no link), custo por LPV, custo por IC, custo por resultado, CPL, taxa de conversão, CPA, ticket médio e ROAS.
+
+Para ver dia a dia uma campanha (ex.: validar "3 vendas em 2 dias"): `--agrupar dia --filtrar "nome da campanha"`.
+
+## Material de estudo carregado
+
+- `conhecimento/aula-facebook-ads-2026.md` — métricas e referências, teste de criativos (ABO método baiano e CBO), teste de estrutura e escala.

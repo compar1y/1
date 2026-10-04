@@ -20,15 +20,16 @@ Nunca invente números, benchmarks ou resultados. Se um dado necessário não ex
 2. **Cálculo das métricas**: rode o script, que normaliza as colunas (PT/EN) e calcula as métricas derivadas:
    ```bash
    python3 scripts/analisar_metricas.py dados/<arquivo>.csv
-   # opções: --agrupar campanha|conjunto|anuncio  --ordenar <metrica>  --json
+   # opções: --agrupar campanha|conjunto|anuncio|dia  --filtrar "<texto>"  --ordenar <metrica>  --json
    ```
    Use `--json` quando precisar dos números exatos para raciocinar. Não recalcule à mão o que o script já entrega.
-3. **Diagnóstico por etapa do funil** — percorra na ordem e aponte onde está o gargalo:
+3. **Diagnóstico por etapa do funil** — percorra na ordem e aponte onde está o gargalo, dando a cada métrica o peso que o material de estudo atribui (ex.: métricas principais × secundárias):
    - **Leilão/entrega**: CPM, alcance, frequência (saturação de público).
-   - **Criativo/atenção**: hook rate (3s / impressões), hold rate (ThruPlay / 3s), CTR (link).
-   - **Clique → página**: CPC, taxa de carregamento da página (LPV / cliques no link).
-   - **Conversão**: taxa de conversão, CPA/custo por resultado.
+   - **Criativo/atenção**: hook rate (3s ÷ impressões), body rate (75% ÷ reproduções de vídeo), hold rate (ThruPlay ÷ 3s), CTR (link).
+   - **Clique → página**: CPC (link), connect rate (LPV ÷ cliques no link).
+   - **Checkout/conversão**: custo por IC, taxa de conversão, CPA/custo por resultado.
    - **Retorno**: ROAS, valor de conversão, ticket médio.
+   - **Validação de testes**: se o material define critérios de teste/escala (ex.: "3 vendas em 2 dias"), verifique-os com `--agrupar dia --filtrar "<campanha>"` e diga, para cada campanha, se passa para a próxima etapa e com qual orçamento. Se faltar a coluna "Dia" ou a comissão, peça ao usuário.
 4. **Compare com o material de estudo**: para cada métrica relevante, mostre o valor real × o critério de referência do material (citando o arquivo de origem).
 5. **Recomendações**: ações concretas e priorizadas (escalar, manter, pausar, trocar criativo, revisar público, revisar página), cada uma justificada pelo número que a motivou e pela regra do material de estudo que a sustenta.
 
@@ -53,6 +54,7 @@ Nunca invente números, benchmarks ou resultados. Se um dado necessário não ex
 
 ## Cuidados analíticos
 
+- Não recomende pausar com base só em métricas que o material classifica como secundárias.
 - Volume baixo não permite conclusão: com menos de ~1.000 impressões ou poucas conversões, trate o resultado como indicativo, não conclusivo, e diga isso (a não ser que o material de estudo defina outro limiar — nesse caso, use o do material).
 - Compare sempre na mesma janela de atribuição e no mesmo período.
 - Diferencie "cliques (todos)" de "cliques no link" e CTR (todos) de CTR (link).
