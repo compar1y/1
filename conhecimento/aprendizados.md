@@ -14,11 +14,12 @@ Formato: **Hipótese → O que foi feito → Resultado (números) → Aprendizad
 - **Aprendizados (parciais):**
   1. **O clique não foi o gargalo.** CTR de 2,4–4,3% na maioria dos anúncios; as pessoas clicam.
   2. **Tráfego caro para ticket baixo.** Com custo por LPV de R$ 4,24, empatar exigiria 16% de conversão da página. Ticket de R$ 27,90 só fecha a conta com tráfego bem mais barato ou com aumento do valor por venda (order bump/upsell).
-  3. **A página perde 1 em cada 3 cliques** (connect rate 65%, abaixo dos 85% da aula).
+  3. **Connect rate de 65% (17 de 26 cliques), mas inconclusivo.** PageSpeed do site = 99 e pixel instalado no `<head>` (padrão do template), então velocidade não explica. Com 26 cliques a margem de erro vai de ~46% a ~81%; os 100% de AD3/AD4 vieram de 3 e 1 cliques (ruído). Suspeita: cliques acidentais em Reels/Stories. Verificar com detalhamento por posicionamento quando houver mais volume.
   4. **O teste misturou variáveis:** vídeos sem texto principal × imagens com texto.
   5. **Orçamento acima da regra da aula:** R$ 13 em vez de 1/3 da comissão (R$ 8,63).
 - **Levar para os próximos testes:**
-  - Conferir **antes** de subir anúncios: connect rate > 85%, pixel registrando a compra, checkout testado com uma compra real.
+  - Conferir **antes** de subir anúncios: PageSpeed (celular), pixel no `<head>`, pixel registrando a compra, checkout testado com uma compra real.
   - Calcular o **CPA de equilíbrio** e a **conversão necessária da página** antes de escolher a oferta/preço.
   - Mudar **uma variável por vez** entre os criativos (mesmo texto, mesmo público, mesma página).
+  6. **No template da página, o evento IC dispara no clique do botão de compra** (antes do checkout da Wiapy), não quando o checkout é de fato aberto/preenchido.
 - **Resultado do dia 2:** _pendente_
