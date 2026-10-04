@@ -127,13 +127,16 @@ def para_numero(valor):
 
 
 def ler_csv(caminho):
-    for encoding in ("utf-8-sig", "latin-1"):
+    with open(caminho, "rb") as f:
+        bruto = f.read()
+    # O Gerenciador exporta em UTF-8 (CSV) ou UTF-16 com tabulação (exportação em massa).
+    if bruto[:2] in (b"\xff\xfe", b"\xfe\xff"):
+        conteudo = bruto.decode("utf-16")
+    else:
         try:
-            with open(caminho, encoding=encoding, newline="") as f:
-                conteudo = f.read()
-            break
+            conteudo = bruto.decode("utf-8-sig")
         except UnicodeDecodeError:
-            continue
+            conteudo = bruto.decode("latin-1")
     try:
         dialeto = csv.Sniffer().sniff(conteudo[:4096], delimiters=",;\t")
     except csv.Error:
@@ -257,6 +260,13 @@ def main():
     args = p.parse_args()
 
     linhas, presentes, nao_reconhecidas = ler_csv(args.csv)
+    if not presentes & {"gasto", "impressoes", "cliques_link", "resultados", "compras"}:
+        configuracao = "Campaign ID" in nao_reconhecidas or "Identificação da campanha" in nao_reconhecidas
+        sys.exit(
+            "O arquivo não tem colunas de desempenho (gasto, impressões, cliques, compras).\n"
+            + ("Parece uma exportação de configuração (edição em massa). " if configuracao else "")
+            + "Exporte pela tabela: Relatórios → Exportar dados da tabela (veja dados/LEIAME.md)."
+        )
     if args.filtrar:
         alvo = args.filtrar.lower()
         linhas = [l for l in linhas if any(alvo in (l.get(n) or "").lower() for n in NIVEIS[:3])]
