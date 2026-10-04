@@ -59,4 +59,5 @@ Nunca invente números, benchmarks ou resultados. Se um dado necessário não ex
 - Compare sempre na mesma janela de atribuição e no mesmo período.
 - Diferencie "cliques (todos)" de "cliques no link" e CTR (todos) de CTR (link).
 - Ao comparar anúncios, considere o gasto: um CPA ótimo com gasto irrisório não é sinal de escala.
+- O usuário trata o gasto como investimento em aprendizado. Ao fim de cada análise, acrescente em `conhecimento/aprendizados.md` o resultado e o aprendizado do teste (hipótese → resultado → aprendizado → próximo teste) e, ao planejar um teste novo, consulte os aprendizados anteriores.
 - Se o usuário pedir para salvar o relatório, escreva em `relatorios/AAAA-MM-DD-<tema>.md`.

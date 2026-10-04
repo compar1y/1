@@ -30,11 +30,12 @@ Para ver dia a dia uma campanha (ex.: validar "3 vendas em 2 dias"): `--agrupar 
 
 - `conhecimento/aula-facebook-ads-2026.md` — métricas e referências, teste de criativos (ABO método baiano e CBO), teste de estrutura e escala.
 - `conhecimento/contexto-do-negocio.md` — oferta, preço, taxas da plataforma e orçamentos calculados.
+- `conhecimento/aprendizados.md` — diário de testes: hipótese, resultado e aprendizado de cada rodada.
 
 ## Usar no Claude chat (claude.ai)
 
 1. Em claude.ai → **Projetos → Criar projeto** ("Analista Meta Ads").
 2. Em **Instruções do projeto**, cole o conteúdo de `claude-chat/instrucoes-do-projeto.md`.
-3. Em **Conhecimento do projeto**, envie `conhecimento/aula-facebook-ads-2026.md` e `conhecimento/contexto-do-negocio.md`.
+3. Em **Conhecimento do projeto**, envie `conhecimento/aula-facebook-ads-2026.md`, `conhecimento/contexto-do-negocio.md` e `conhecimento/aprendizados.md`.
 4. Abra conversas dentro do projeto e envie prints ou CSVs do Gerenciador.
 5. Quando o histórico mudar, substitua o `contexto-do-negocio.md` no projeto pela versão nova.
