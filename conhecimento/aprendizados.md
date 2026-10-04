@@ -22,5 +22,5 @@ Formato: **Hipótese → O que foi feito → Resultado (números) → Aprendizad
   - Conferir **antes** de subir anúncios: PageSpeed (celular), pixel no `<head>`, pixel registrando a compra, checkout testado com uma compra real.
   - Calcular o **CPA de equilíbrio** e a **conversão necessária da página** antes de escolher a oferta/preço.
   - Mudar **uma variável por vez** entre os criativos (mesmo texto, mesmo público, mesma página).
-  7. **Pixel confirmado** (Meta Pixel Helper, 04/10): pixel 3014321198914220 ativo na página de tapetes — o mesmo usado nas campanhas. Falta confirmar o evento **Purchase** vindo do checkout da Wiapy (outro domínio).
+  7. **Pixel confirmado** (Meta Pixel Helper, 04/10): pixel 3014321198914220 ativo na página de tapetes — o mesmo usado nas campanhas. Usuário testou eventos e checkout (incluindo Purchase via Wiapy): **rastreamento OK**. Rastreamento descartado como causa.
 - **Resultado do dia 2:** _pendente_
