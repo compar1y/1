@@ -10,7 +10,7 @@ Página de vendas (React + Vite + Tailwind) já instrumentada com o **Retina** (
 npm install
 # aponta o tracker para o seu servidor Retina e para a chave do site
 RETINA_URL=https://retina.seudominio.com RETINA_SITE=demo npm run build
-# sem variáveis, usa http://localhost:3000 e o site "demo"
+# sem variáveis, usa https://1-production-ba4e.up.railway.app e o site "demo"
 ```
 
 O resultado fica em `dist/`. Suba essa pasta em qualquer hospedagem estática (Vercel, Netlify, Cloudflare Pages, Hostinger...).

@@ -6,7 +6,7 @@ import {defineConfig, type Plugin} from 'vite';
 // Injeta o tracker do Retina na página. Configure com RETINA_URL e RETINA_SITE no build:
 //   RETINA_URL=https://retina.seudominio.com RETINA_SITE=demo npm run build
 function retina(): Plugin {
-  const url = (process.env.RETINA_URL || 'http://localhost:3000').replace(/\/$/, '');
+  const url = (process.env.RETINA_URL || 'https://1-production-ba4e.up.railway.app').replace(/\/$/, '');
   const site = process.env.RETINA_SITE || 'demo';
   return {
     name: 'retina-tracker',
