@@ -1,0 +1,49 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+  --color-cream: #f7f1e8;
+  --color-paper: #fffaf3;
+  --color-line: #e8dccb;
+  --color-ink: #2b211b;
+  --color-muted: #7a6a5d;
+  --color-terra: #b8603c;
+  --color-terra-dark: #8f4529;
+  --color-sage: #8e9e7e;
+  --color-sage-dark: #5e6e50;
+  --color-gold: #d3a23e;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-sheet {
+  animation: sheet-in 0.22s ease-out;
+}
