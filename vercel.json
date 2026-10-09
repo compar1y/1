@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd pagina-madeira && npm install",
+  "buildCommand": "cd pagina-madeira && npm run build",
+  "outputDirectory": "pagina-madeira/dist"
+}
