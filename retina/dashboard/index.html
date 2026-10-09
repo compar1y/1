@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retina</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/ui/style.css">
+  <script>try { var t = localStorage.getItem('retina_theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {}</script>
+</head>
+<body>
+  <div id="login" class="login" hidden>
+    <form id="login-form" class="login-card">
+      <div class="brand brand-lg"><span class="brand-eye" aria-hidden="true"></span>Retina</div>
+      <p class="muted">Comportamento real dos leads na sua página de vendas.</p>
+      <label for="pw">Senha do painel</label>
+      <input id="pw" type="password" autocomplete="current-password" required autofocus>
+      <button class="btn btn-primary" type="submit">Entrar</button>
+      <p id="login-err" class="err" role="alert"></p>
+    </form>
+  </div>
+
+  <div id="app" class="app" hidden>
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-eye" aria-hidden="true"></span>Retina</div>
+      <nav id="nav">
+        <div class="nav-group">Análise</div>
+        <a href="#/overview" data-page="overview"><i>◎</i>Visão geral</a>
+        <a href="#/retention" data-page="retention"><i>▤</i>Retenção da página</a>
+        <a href="#/heatmap" data-page="heatmap"><i>◉</i>Heatmaps</a>
+        <a href="#/clicks" data-page="clicks"><i>⌖</i>Cliques e eventos</a>
+        <a href="#/compare" data-page="compare"><i>⇄</i>Quem compra × quem não</a>
+        <a href="#/sources" data-page="sources"><i>↗</i>Origens e criativos</a>
+        <div class="nav-group">Pessoas</div>
+        <a href="#/sessions" data-page="sessions"><i>▶</i>Sessões e replay</a>
+        <a href="#/live" data-page="live"><i class="live-dot"></i>Ao vivo <b id="nav-live" class="pill pill-live" hidden></b></a>
+        <a href="#/sales" data-page="sales"><i>$</i>Vendas</a>
+        <div class="nav-group">Sistema</div>
+        <a href="#/setup" data-page="setup"><i>⚙</i>Instalação e sites</a>
+        <a href="#/server" data-page="server"><i>▣</i>Servidor</a>
+      </nav>
+      <div class="sidebar-foot">
+        <button class="btn btn-ghost btn-sm" id="theme-btn" type="button">Tema</button>
+        <button class="btn btn-ghost btn-sm" id="logout-btn" type="button">Sair</button>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="btn btn-ghost menu-btn" id="menu-btn" type="button" aria-label="Menu">☰</button>
+        <div class="filters" id="filters">
+          <select id="f-site" aria-label="Site"></select>
+          <select id="f-period" aria-label="Período">
+            <option value="today">Hoje</option>
+            <option value="yesterday">Ontem</option>
+            <option value="7">Últimos 7 dias</option>
+            <option value="14">Últimos 14 dias</option>
+            <option value="30">Últimos 30 dias</option>
+            <option value="90">Últimos 90 dias</option>
+            <option value="all">Tudo</option>
+          </select>
+          <select id="f-device" aria-label="Dispositivo">
+            <option value="">Todos os dispositivos</option>
+            <option value="mobile">Celular</option>
+            <option value="desktop">Desktop</option>
+          </select>
+          <select id="f-source" aria-label="Origem"><option value="">Todas as origens</option></select>
+          <select id="f-campaign" aria-label="Campanha"><option value="">Todas as campanhas</option></select>
+          <select id="f-content" aria-label="Criativo"><option value="">Todos os criativos</option></select>
+          <button class="btn btn-ghost btn-sm" id="f-clear" type="button" hidden>Limpar filtros</button>
+        </div>
+      </header>
+      <main id="page" class="page" tabindex="-1"></main>
+    </div>
+  </div>
+
+  <div id="tip" class="tip" role="tooltip" hidden></div>
+  <script src="/ui/app.js"></script>
+</body>
+</html>

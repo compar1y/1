@@ -1,0 +1,14 @@
+{
+  "name": "retina",
+  "version": "1.0.0",
+  "description": "Retina — tracker de comportamento para páginas de vendas (retenção por seção, heatmaps, replay, vendas x comportamento)",
+  "type": "module",
+  "private": true,
+  "engines": { "node": ">=22.13" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning server/index.js",
+    "dev": "node --env-file-if-exists=.env --disable-warning=ExperimentalWarning --watch server/index.js",
+    "simulate": "node scripts/simulate.js",
+    "test": "node --disable-warning=ExperimentalWarning --test test/*.test.js"
+  }
+}

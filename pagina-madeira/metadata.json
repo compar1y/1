@@ -1,0 +1,8 @@
+{
+  "name": "Remix 100 Projetos Lucrativos com Madeira",
+  "description": "Biblioteca digital com mais de 100 projetos lucrativos com madeira, incluindo medidas, materiais e passo a passo visual.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
