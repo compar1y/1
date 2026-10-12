@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --color-cream: #F5F0E7;
+  --color-paper: #FAF7F2;
+  --color-line: #E8DDD0;
+  --color-ink: #171512;
+  --color-bark: #3F2A1E;
+  --color-wood: #6F4528;
+  --color-amber: #C86A1B;
+  --color-amber-dark: #9E4E0D;
+  --color-leaf: #008A5B;
+}
+
+@layer base {
+  html { background: var(--color-cream); color: var(--color-ink); -webkit-tap-highlight-color: transparent; }
+  body { min-height: 100dvh; }
+  button { cursor: pointer; }
+}
+
+.pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes toastIn { from { opacity: 0; transform: translate(-50%, -10px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.animate-sheet { animation: sheetUp .28s cubic-bezier(.16,1,.3,1); }
+.animate-fade { animation: fadeIn .2s ease-out; }
+.animate-toast { animation: toastIn .25s ease-out; }
+@media (prefers-reduced-motion: reduce) { .animate-sheet, .animate-fade, .animate-toast { animation: none; } }

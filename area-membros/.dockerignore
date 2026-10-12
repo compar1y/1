@@ -1,0 +1,6 @@
+node_modules
+web/dist
+data
+content/*.pdf
+test
+.env
