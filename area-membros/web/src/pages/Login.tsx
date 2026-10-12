@@ -45,8 +45,26 @@ export function Login({ token }: { token: string | null }) {
         : brand?.loginIcon && <div className="mx-auto mt-8 grid h-32 w-32 place-items-center rounded-full bg-gradient-to-br from-wood to-amber text-[64px] shadow-xl" aria-hidden>{brand.loginIcon}</div>}
       <h1 className="mt-6 text-[28px] font-black leading-[1.1] text-ink">Sua área de membros</h1>
       <p className="mt-2 text-[15px] leading-relaxed text-bark/80">
-        {brand?.texts.loginSubtitle}
+        {brand?.demo ? 'Veja como a sua cliente vai acessar as receitas, os bônus e as ofertas.' : brand?.texts.loginSubtitle}
       </p>
+
+      {brand?.demo && state !== 'verifying' && (
+        <div className="mt-8 rounded-2xl border-2 border-dashed border-amber/50 bg-white p-4">
+          <div className="text-[12px] font-extrabold uppercase tracking-wide text-amber-dark">Modo demonstração</div>
+          <p className="mt-1 text-[13.5px] text-bark/75">Entre como uma cliente de exemplo. Tocar numa oferta simula a compra e libera o conteúdo na hora.</p>
+          <div className="mt-3 space-y-2">
+            {brand.demo.profiles.map((pr) => (
+              <button key={pr.product} onClick={async () => { await api('/api/demo/login', { product: pr.product }); await refresh(); navigate('/', { replace: true }); }}
+                className="w-full rounded-xl bg-amber py-3 text-[15px] font-extrabold text-white shadow-[0_4px_0_var(--color-amber-dark)] active:translate-y-[2px] active:shadow-[0_2px_0_var(--color-amber-dark)]">
+                Entrar como cliente do {pr.name}
+              </button>
+            ))}
+          </div>
+          <a href="/admin" className="mt-3 block text-center text-[13px] font-bold text-bark/70 underline">
+            Ver o painel de métricas{brand.demo.adminPassword ? ` (senha: ${brand.demo.adminPassword})` : ''}
+          </a>
+        </div>
+      )}
 
       {state === 'verifying' && (
         <div className="mt-8 flex items-center gap-3 rounded-2xl bg-white p-4 text-[15px] font-semibold text-bark shadow-sm">
@@ -68,7 +86,7 @@ export function Login({ token }: { token: string | null }) {
           )}
           <button onClick={() => setState('idle')} className="mt-4 text-[13px] font-semibold text-amber-dark underline">Usar outro e-mail</button>
         </div>
-      ) : state !== 'verifying' && (
+      ) : state !== 'verifying' && !brand?.demo && (
         <form onSubmit={submit} className="mt-8">
           <label htmlFor="email" className="text-[13px] font-bold text-bark">E-mail da compra</label>
           <div className="mt-1.5 flex items-center gap-2 rounded-2xl border-2 border-line bg-white px-4 focus-within:border-amber">

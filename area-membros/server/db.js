@@ -107,7 +107,11 @@ export function setting(key, fallback) {
 export const randomId = (bytes = 16) => crypto.randomBytes(bytes).toString('base64url');
 export const sha256 = (s) => crypto.createHash('sha256').update(s).digest('hex');
 
+// Transação; chamadas aninhadas entram na transação de fora (o seed grava milhares de linhas numa só).
+let depth = 0;
 export function tx(fn) {
+  if (depth > 0) { depth++; try { return fn(); } finally { depth--; } }
   db.exec('BEGIN');
-  try { const r = fn(); db.exec('COMMIT'); return r; } catch (e) { db.exec('ROLLBACK'); throw e; }
+  depth = 1;
+  try { const r = fn(); db.exec('COMMIT'); return r; } catch (e) { db.exec('ROLLBACK'); throw e; } finally { depth = 0; }
 }

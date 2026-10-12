@@ -10,7 +10,7 @@ let deferred: InstallEvent | null = null;
 addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e as InstallEvent; });
 
 export function Account() {
-  const { me, setMe } = useMe();
+  const { me, setMe, refresh } = useMe();
   const [canInstall, setCanInstall] = useState(!!deferred);
   useEffect(() => {
     const on = () => setCanInstall(true);
@@ -50,6 +50,12 @@ export function Account() {
       {me.settings.supportEmail && <a href={`mailto:${me.settings.supportEmail}`} className="mt-4 flex items-center gap-2 rounded-2xl bg-white p-4 text-[14px] font-bold text-bark shadow-sm">
         <LifeBuoy className="h-5 w-5 text-amber" /> Suporte: {me.settings.supportEmail}
       </a>}
+      {me.settings.demo && (
+        <button onClick={async () => { await api('/api/demo/reset', {}); await refresh(); navigate('/'); }}
+          className="mt-4 w-full rounded-2xl bg-white py-3 text-[14px] font-bold text-amber-dark shadow-sm">
+          Recomeçar a demonstração (volta ao kit inicial)
+        </button>
+      )}
       <button
         onClick={async () => { await api('/api/auth/logout', {}); setMe(null); navigate('/entrar'); location.reload(); }}
         className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-line py-3 text-[14px] font-bold text-bark">

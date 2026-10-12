@@ -13,6 +13,7 @@ import { sendEmail, accessEmail, emailConfigured } from './email.js';
 import { placeholderPdf } from './pdf.js';
 import { overview, searchCustomers } from './admin.js';
 import { brand, manifest, iconSvg } from './brand.js';
+import { seedHistory, ensureDemoCustomers, resetDemoCustomer, demoEmail, frontProducts } from './seed.js';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const PORT = Number(process.env.PORT || 3100);
@@ -22,6 +23,10 @@ const WEB_DIR = path.join(ROOT, 'web', 'dist');
 const PROD = process.env.NODE_ENV === 'production';
 const DEV_LINKS = !PROD && !emailConfigured();
 const SESSION_DAYS = 90;
+// Modo demonstração (DEMO=1): para só visualizar o app (ex.: na Vercel). Recria dados de exemplo ao iniciar,
+// entra com um toque como cliente de cada kit, e tocar numa oferta "compra" na hora. Não use com clientes reais.
+const DEMO = process.env.DEMO === '1';
+const DEMO_SECRET = process.env.DEMO_SECRET || 'demo-preview';
 
 const cat = (await import(process.env.CATALOG_PATH ? path.resolve(process.env.CATALOG_PATH) : path.join(ROOT, 'catalog.js'))).default;
 const catalogErrors = validateCatalog(cat);
@@ -30,7 +35,13 @@ if (catalogErrors.length) {
   if (PROD) process.exit(1);
 }
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || setting('admin_password', () => randomId(9));
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || (DEMO ? 'demo' : setting('admin_password', () => randomId(9)));
+
+let demoProfiles = [];
+if (DEMO) {
+  if (!db.prepare('SELECT COUNT(*) n FROM customers').get().n) seedHistory(cat, { customers: 150 });
+  demoProfiles = ensureDemoCustomers(cat).map(({ product, name, email }) => ({ product, name, email }));
+}
 const WEBHOOK_TOKEN = process.env.WEBHOOK_TOKEN || setting('webhook_token', () => randomId(18));
 
 // ---------- utilidades HTTP ----------
@@ -92,19 +103,37 @@ function createSession(customerId, isAdmin = false) {
     .run(sha256(token), customerId, isAdmin ? 1 : 0, now, now + SESSION_DAYS * 86400e3);
   return token;
 }
+// Na demonstração, a sessão é um cookie assinado com o e-mail: continua válida mesmo quando o banco é recriado.
+const sign = (v) => crypto.createHmac('sha256', DEMO_SECRET).update(v).digest('base64url');
+const demoToken = (v) => `d.${Buffer.from(v).toString('base64url')}.${sign(v)}`;
+function readDemoToken(t) {
+  const [, b, s] = String(t || '').split('.');
+  if (!b || !s) return null;
+  const v = Buffer.from(b, 'base64url').toString();
+  const a = Buffer.from(sign(v)); const c = Buffer.from(s);
+  return a.length === c.length && crypto.timingSafeEqual(a, c) ? v : null;
+}
+
 const touch = db.prepare('UPDATE customers SET last_seen=? WHERE id=?');
 function currentCustomer(req) {
   const t = cookies(req).am_session;
   if (!t) return null;
-  const s = qSession.get(sha256(t), Date.now());
-  if (!s || !s.customer_id) return null;
-  const c = customerById(s.customer_id);
+  let c;
+  if (DEMO && t.startsWith('d.')) {
+    const email = readDemoToken(t);
+    c = email ? customerByEmail(email) : null;
+  } else {
+    const s = qSession.get(sha256(t), Date.now());
+    if (!s || !s.customer_id) return null;
+    c = customerById(s.customer_id);
+  }
   if (c && (!c.last_seen || Date.now() - c.last_seen > 60e3)) touch.run(Date.now(), c.id);
   return c;
 }
 function isAdmin(req) {
   const t = cookies(req).am_admin;
   if (!t) return false;
+  if (DEMO && t.startsWith('d.')) return readDemoToken(t) === 'admin';
   const s = qSession.get(sha256(t), Date.now());
   return !!s?.is_admin;
 }
@@ -130,7 +159,10 @@ function me(customer) {
     products,
     library: buildLibrary(cat, { customerId: customer.id, firstName: firstName(customer.name), products }),
     progress: progressOf(customer.id),
-    settings: brand(cat),
+    // Última compra aprovada nos últimos 15 min: o app usa para confirmar "liberado" quando a cliente volta do checkout
+    recent: db.prepare("SELECT product_id FROM purchases WHERE customer_id=? AND status='approved' AND updated_at>? ORDER BY updated_at DESC, id DESC LIMIT 1").all(customer.id, Date.now() - 15 * 60e3)
+      .map((r) => ({ product: r.product_id, titles: (cat.products[r.product_id]?.grants || []).map((g) => cat.deliverables[g]?.title).filter(Boolean) })),
+    settings: { ...brand(cat), demo: DEMO },
   };
 }
 
@@ -196,7 +228,22 @@ async function handle(req, res) {
 
   if (p === '/health') return json(res, 200, { ok: true });
   // Marca e textos (a tela de login precisa antes de a pessoa entrar)
-  if (p === '/api/public' && m === 'GET') return json(res, 200, brand(cat), { 'Cache-Control': 'public, max-age=300' });
+  if (p === '/api/public' && m === 'GET') return json(res, 200, { ...brand(cat), demo: DEMO ? { profiles: demoProfiles, adminPassword: process.env.ADMIN_PASSWORD ? null : ADMIN_PASSWORD } : null }, { 'Cache-Control': 'no-cache' });
+
+  // --- demonstração ---
+  if (DEMO && p === '/api/demo/login' && m === 'POST') {
+    const { product } = await readJson(req);
+    const prof = demoProfiles.find((x) => x.product === product);
+    if (!prof) return json(res, 400, { error: 'Perfil inválido.' });
+    return json(res, 200, { ok: true }, { 'Set-Cookie': cookie(req, 'am_session', demoToken(prof.email), 7 * 86400) });
+  }
+  if (DEMO && p === '/api/demo/reset' && m === 'POST') {
+    const c = currentCustomer(req);
+    const prof = c && demoProfiles.find((x) => x.email === c.email);
+    if (!prof) return json(res, 400, { error: 'Só para os clientes de demonstração.' });
+    resetDemoCustomer(cat, c.id, prof.product);
+    return json(res, 200, { ok: true });
+  }
   if (p === '/manifest.webmanifest' && m === 'GET') return send(res, 200, JSON.stringify(manifest(cat)), { 'Content-Type': 'application/manifest+json', 'Cache-Control': 'public, max-age=3600' });
   if (p === '/icon.svg' && m === 'GET' && !fs.existsSync(path.join(WEB_DIR, 'icon.svg')))
     return send(res, 200, iconSvg(cat), { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=3600' });
@@ -271,6 +318,11 @@ async function handle(req, res) {
     const ref = url.searchParams.get('r');
     const clickId = 'am_' + crypto.randomBytes(9).toString('base64url');
     logOfferEvent({ customerId: c.id, offerId: mm[1], placement, ref: validRef(ref) ? ref : null, type: 'click', clickId });
+    if (DEMO) {
+      // Demonstração: em vez de ir ao checkout, registra a compra (atribuída a este clique) e volta para o app
+      recordPurchase(cat, { customerId: c.id, productId: offer.product, txId: `demo-${clickId}`, status: 'approved', value: offer.price, source: 'simulate', clickId });
+      return redirect(res, '/?comprou=1');
+    }
     if (isPlaceholderUrl(offer.checkoutUrl)) return redirect(res, `/checkout-pendente?oferta=${encodeURIComponent(mm[1])}`);
     const dest = new URL(offer.checkoutUrl);
     const add = (k, v) => { if (k && v && !dest.searchParams.has(k)) dest.searchParams.set(k, v); };
@@ -322,7 +374,7 @@ async function handle(req, res) {
     if (limited('admin:' + clientIp(req), 8, 15 * 60e3)) return json(res, 429, { error: 'Muitas tentativas. Aguarde alguns minutos.' });
     const a = Buffer.from(sha256(String(password || ''))); const b = Buffer.from(sha256(ADMIN_PASSWORD));
     if (!crypto.timingSafeEqual(a, b)) return json(res, 401, { error: 'Senha incorreta.' });
-    return json(res, 200, { ok: true }, { 'Set-Cookie': cookie(req, 'am_admin', createSession(null, true), 30 * 86400) });
+    return json(res, 200, { ok: true }, { 'Set-Cookie': cookie(req, 'am_admin', DEMO ? demoToken('admin') : createSession(null, true), 30 * 86400) });
   }
   if (p.startsWith('/api/admin/')) {
     if (!isAdmin(req)) return json(res, 401, { error: 'login' });
@@ -397,18 +449,20 @@ function relayToRetina(body, contentType) {
     .catch((e) => console.error('[retina] falha ao repassar webhook:', e.message));
 }
 
-export const server = http.createServer(async (req, res) => {
+export async function handler(req, res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'same-origin');
   try { await handle(req, res); } catch (e) {
     if (!res.headersSent) json(res, e.status || 500, { error: e.status ? e.message : 'Erro interno.' });
     if (!e.status) console.error(e);
   }
-});
+}
+
+export const server = http.createServer(handler);
 
 if (process.env.NO_LISTEN !== '1') {
   server.listen(PORT, () => {
-    console.log(`\n🪵 Área de membros em ${PUBLIC_URL}  (porta ${PORT})`);
+    console.log(`\n🎄 Área de membros em ${PUBLIC_URL}  (porta ${PORT})${DEMO ? '  • MODO DEMONSTRAÇÃO' : ''}`);
     console.log(`   Painel:  ${PUBLIC_URL}/admin   senha: ${process.env.ADMIN_PASSWORD ? '(ADMIN_PASSWORD)' : ADMIN_PASSWORD}`);
     console.log(`   Webhook: ${PUBLIC_URL}/webhook/${WEBHOOK_TOKEN}`);
     if (!emailConfigured()) console.log('   E-mail:  não configurado (RESEND_API_KEY); links de acesso aparecem aqui no terminal.');

@@ -3,3 +3,4 @@ web/dist
 data
 content/*.pdf
 .env
+data-demo

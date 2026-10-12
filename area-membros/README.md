@@ -126,6 +126,27 @@ O botão da oferta passa por `/go/<oferta>`, que registra o clique e redireciona
 
 Quando a Wiapy devolve o `src`/`sck` no webhook, a venda é ligada ao clique exato. Se não devolver, a venda é atribuída ao último clique do cliente numa oferta daquele produto nos últimos 14 dias.
 
+## Ver na Vercel (modo demonstração)
+
+Para só visualizar, sem clientes reais. A Vercel não guarda arquivos, então nesse modo o banco fica na memória temporária e é recriado com dados de exemplo sempre que a função "acorda":
+
+- o login vira botões: "Entrar como cliente do Kit Essencial" e "do Kit Completo";
+- tocar numa oferta simula a compra e libera o conteúdo na hora;
+- o painel `/admin` abre com a senha `demo` e mostra 30 dias de dados simulados;
+- compras e progresso feitos na demonstração somem quando a Vercel reinicia a função (depois de alguns minutos parada).
+
+Como publicar:
+
+1. Na Vercel: **Add New → Project**, importe o repositório `compar1y/1`.
+2. Em **Root Directory**, escolha `area-membros` (o resto ela lê do `area-membros/vercel.json`).
+3. Se a branch ainda não estiver na `main`, depois do primeiro deploy vá em **Settings → Git** e mude a *Production Branch* para `claude/awesome-ride-0c1pzn`, ou faça o merge.
+4. Opcional: em **Settings → Environment Variables**, defina `ADMIN_PASSWORD` (senha do painel) e `DEMO_SECRET` (qualquer texto longo).
+5. **Deploy**.
+
+Para ver o mesmo modo no computador: `npm run build && npm run demo` → http://localhost:3100.
+
+Para usar de verdade (com clientes, webhook da Wiapy e e-mail), use um servidor com disco, como explicado abaixo.
+
 ## Colocar no ar
 
 1. **Wiapy**:

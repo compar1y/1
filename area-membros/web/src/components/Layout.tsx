@@ -29,6 +29,7 @@ export function Layout({ children, title, backTo }: { children: ReactNode; title
           <div className="min-w-0 flex-1 truncate text-[15px] font-extrabold text-ink">{title || me?.settings.appName || 'Área de membros'}</div>
         </div>
       </header>
+      {me?.settings.demo && <div className="bg-amber px-4 py-1.5 text-center text-[11.5px] font-bold text-white">Demonstração • as compras aqui são simuladas</div>}
       <main className="px-4 pt-4">{children}</main>
       <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line bg-white/95 backdrop-blur" aria-label="Navegação principal">
         <div className="mx-auto grid max-w-[560px] grid-cols-4">

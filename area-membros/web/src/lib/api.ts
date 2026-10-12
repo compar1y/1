@@ -55,6 +55,8 @@ export type Brand = {
   supportEmail: string | null;
   loginImage: string | null;
   loginIcon: string | null;
+  /** Só no modo demonstração: perfis para entrar com um toque */
+  demo?: { profiles: { product: string; name: string; email: string }[]; adminPassword: string | null } | null;
   icon: string;
   colors: Record<'primary' | 'primaryDark' | 'dark' | 'mid' | 'bg' | 'paper' | 'line' | 'ink' | 'success', string>;
   texts: Record<'homeSubtitle' | 'lockedSection' | 'lockedHint' | 'lockedIntro' | 'lockedNotice' | 'storeIntro' | 'installHint' | 'welcomeEmail' | 'loginSubtitle' | 'itemsTitle' | 'itemLabel', string>;
@@ -65,7 +67,8 @@ export type Me = {
   products: string[];
   library: { deliverables: Deliverable[]; home: Offer[]; store: Offer[] };
   progress: Progress[];
-  settings: Brand;
+  recent: { product: string; titles: string[] }[];
+  settings: Brand & { demo: boolean };
 };
 
 export class ApiError extends Error {

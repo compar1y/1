@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": "web/dist",
+  "functions": {
+    "api/index.js": { "includeFiles": "{catalog.js,server/**}", "maxDuration": 10 }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index?__p=/api/:path*" },
+    { "source": "/go/:path*", "destination": "/api/index?__p=/go/:path*" },
+    { "source": "/webhook/:path*", "destination": "/api/index?__p=/webhook/:path*" },
+    { "source": "/manifest.webmanifest", "destination": "/api/index?__p=/manifest.webmanifest" },
+    { "source": "/icon.svg", "destination": "/api/index?__p=/icon.svg" },
+    { "source": "/((?!assets/).*)", "destination": "/index.html" }
+  ]
+}

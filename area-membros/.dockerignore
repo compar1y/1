@@ -4,3 +4,5 @@ data
 content/*.pdf
 test
 .env
+api
+vercel.json

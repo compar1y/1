@@ -26,18 +26,25 @@ export function Home({ justBought }: { justBought: boolean }) {
   const { me, refresh } = useMe();
   const [waiting, setWaiting] = useState(justBought);
 
-  // Voltou do checkout (?comprou=1): consulta até o webhook liberar o conteúdo
+  // Voltou do checkout (?comprou=1): consulta até a compra aparecer como aprovada (o webhook pode demorar alguns segundos)
+  const [unlocked, setUnlocked] = useState<string[] | null>(null);
   useEffect(() => {
     if (!justBought) return;
-    const before = me?.library.deliverables.filter((d) => d.owned).length ?? 0;
     let n = 0;
-    const t = setInterval(async () => {
+    let t: number | undefined;
+    const check = async () => {
       const m = await refresh();
-      n++;
-      const after = m?.library.deliverables.filter((d) => d.owned).length ?? 0;
-      if (after > before || n >= 30) { setWaiting(false); clearInterval(t); history.replaceState(null, '', '/'); }
-    }, 4000);
-    return () => clearInterval(t);
+      const recent = m?.recent || [];
+      if (recent.length || ++n >= 30) {
+        setWaiting(false);
+        if (recent.length) setUnlocked([...new Set(recent.flatMap((r) => r.titles))]);
+        history.replaceState(null, '', '/');
+        return;
+      }
+      t = window.setTimeout(check, 4000);
+    };
+    check();
+    return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [justBought]);
 
@@ -55,6 +62,13 @@ export function Home({ justBought }: { justBought: boolean }) {
         <div className="mt-4 flex items-center gap-3 rounded-2xl border border-leaf/30 bg-white p-4 text-[14px] font-semibold text-bark shadow-sm">
           <Loader2 className="h-5 w-5 shrink-0 animate-spin text-leaf" />
           Compra recebida! Estamos liberando seu novo conteúdo, isso leva alguns segundos.
+        </div>
+      )}
+
+      {unlocked && !waiting && (
+        <div className="mt-4 rounded-2xl border border-leaf/30 bg-white p-4 shadow-sm">
+          <div className="text-[15px] font-extrabold text-leaf">🎉 Compra confirmada, já está liberado!</div>
+          {!!unlocked.length && <p className="mt-1 text-[13.5px] text-bark/80">{unlocked.join(' • ')}</p>}
         </div>
       )}
 
