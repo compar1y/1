@@ -12,6 +12,7 @@ import { parsePayload, parseSale } from './webhook.js';
 import { sendEmail, accessEmail, emailConfigured } from './email.js';
 import { placeholderPdf } from './pdf.js';
 import { overview, searchCustomers } from './admin.js';
+import { brand, manifest, iconSvg } from './brand.js';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const PORT = Number(process.env.PORT || 3100);
@@ -116,7 +117,7 @@ function createLoginLink(customerId, ttlMs) {
 
 async function sendAccess(customer, kind, items) {
   const link = createLoginLink(customer.id, kind === 'login' ? 3600e3 : 7 * 86400e3);
-  const mail = accessEmail({ appName: cat.settings.appName, name: firstName(customer.name), link, kind, items, supportEmail: cat.settings.supportEmail });
+  const mail = accessEmail({ brand: brand(cat), name: firstName(customer.name), link, kind, items });
   await sendEmail({ to: customer.email, ...mail });
   return link;
 }
@@ -129,7 +130,7 @@ function me(customer) {
     products,
     library: buildLibrary(cat, { customerId: customer.id, firstName: firstName(customer.name), products }),
     progress: progressOf(customer.id),
-    settings: { appName: cat.settings.appName, supportEmail: cat.settings.supportEmail },
+    settings: brand(cat),
   };
 }
 
@@ -194,6 +195,11 @@ async function handle(req, res) {
   const m = req.method;
 
   if (p === '/health') return json(res, 200, { ok: true });
+  // Marca e textos (a tela de login precisa antes de a pessoa entrar)
+  if (p === '/api/public' && m === 'GET') return json(res, 200, brand(cat), { 'Cache-Control': 'public, max-age=300' });
+  if (p === '/manifest.webmanifest' && m === 'GET') return send(res, 200, JSON.stringify(manifest(cat)), { 'Content-Type': 'application/manifest+json', 'Cache-Control': 'public, max-age=3600' });
+  if (p === '/icon.svg' && m === 'GET' && !fs.existsSync(path.join(WEB_DIR, 'icon.svg')))
+    return send(res, 200, iconSvg(cat), { 'Content-Type': 'image/svg+xml', 'Cache-Control': 'public, max-age=3600' });
 
   // --- login por link mágico ---
   if (p === '/api/auth/request' && m === 'POST') {
@@ -290,7 +296,7 @@ async function handle(req, res) {
     const full = path.join(CONTENT_DIR, path.basename(f.file));
     const name = f.file;
     if (serveFile(req, res, full, { type: 'application/pdf', cache: 'private, max-age=3600', download, name })) return;
-    const pdf = placeholderPdf({ title: f.title, parent: f.parent || cat.settings.appName, file: f.file });
+    const pdf = placeholderPdf({ title: f.title, parent: f.parent || brand(cat).appName, file: f.file });
     return send(res, 200, m === 'HEAD' ? '' : pdf, {
       'Content-Type': 'application/pdf', 'Content-Length': pdf.length, 'Cache-Control': 'private, no-cache',
       'Content-Disposition': `${download ? 'attachment' : 'inline'}; filename*=UTF-8''${encodeURIComponent(name)}`,

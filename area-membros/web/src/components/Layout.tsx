@@ -24,7 +24,7 @@ export function Layout({ children, title, backTo }: { children: ReactNode; title
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
             </Link>
           ) : (
-            <img src="/icon.svg" alt="" className="h-8 w-8 rounded-lg" />
+            <img src={me?.settings.icon || '/icon.svg'} alt="" className="h-8 w-8 rounded-lg" />
           )}
           <div className="min-w-0 flex-1 truncate text-[15px] font-extrabold text-ink">{title || me?.settings.appName || 'Área de membros'}</div>
         </div>

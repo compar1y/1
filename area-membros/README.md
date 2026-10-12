@@ -44,6 +44,16 @@ npm run dev             # app em http://localhost:5173  •  servidor em :3100
 
 Outros comandos: `npm test` (motor de ofertas, webhook e o fluxo inteiro pela API), `npm run lint` (TypeScript), `npm run build` e `npm start` (como em produção, tudo na porta 3100).
 
+## Trocar de produto
+
+Nome, cores, textos, imagem do login e o catálogo inteiro vivem no `catalog.js`. O código do app não tem nada preso a um produto.
+
+- `settings.appName`, `shortName`, `supportEmail`
+- `settings.brand.colors`: cores do app e do e-mail. `brand.loginImage`: imagem da tela de login (coloque o arquivo em `web/public/assets/`).
+- `settings.texts`: frases que dependem do produto ("O que vamos fazer hoje?", "Bônus do Pacote Completo"...). O que não for definido usa um texto neutro.
+- Num entregável do tipo `library`, `itemsTitle` e `itemLabel` dão nome às partes (ex.: "Módulos" / "Módulo 01").
+- Ícone do app: o servidor gera um ícone com as cores da marca. Para usar o seu, coloque `icon.svg`, `icon-192.png` e `icon-512.png` em `web/public/`.
+
 ## Cadastrar uma oferta nova
 
 Tudo fica no **`catalog.js`**. Para uma oferta nova, você mexe em três blocos:

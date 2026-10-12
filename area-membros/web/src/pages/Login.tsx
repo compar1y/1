@@ -5,7 +5,7 @@ import { navigate } from '../lib/router';
 import { useMe } from '../state';
 
 export function Login({ token }: { token: string | null }) {
-  const { refresh } = useMe();
+  const { refresh, brand } = useMe();
   const [email, setEmail] = useState(() => { try { return localStorage.getItem('am_email') || ''; } catch { return ''; } });
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'verifying'>(token ? 'verifying' : 'idle');
   const [error, setError] = useState<string | null>(null);
@@ -38,13 +38,13 @@ export function Login({ token }: { token: string | null }) {
   return (
     <div className="mx-auto flex min-h-dvh max-w-[440px] flex-col px-5 pb-10 pt-8">
       <div className="flex items-center gap-2.5">
-        <img src="/icon.svg" alt="" className="h-9 w-9 rounded-xl" />
-        <span className="text-[14px] font-extrabold text-bark">+100 Projetos com Madeira</span>
+        <img src={brand?.icon || '/icon.svg'} alt="" className="h-9 w-9 rounded-xl" />
+        <span className="text-[14px] font-extrabold text-bark">{brand?.appName}</span>
       </div>
-      <img src="/assets/basic-mockup.webp" alt="" className="mx-auto mt-6 h-[200px] w-auto object-contain drop-shadow-xl" />
+      {brand?.loginImage && <img src={brand.loginImage} alt="" className="mx-auto mt-6 h-[200px] w-auto object-contain drop-shadow-xl" />}
       <h1 className="mt-6 text-[28px] font-black leading-[1.1] text-ink">Sua área de membros</h1>
       <p className="mt-2 text-[15px] leading-relaxed text-bark/80">
-        Entre com o <b>mesmo e-mail que você usou na compra</b>. Enviamos um link de acesso, sem senha.
+        {brand?.texts.loginSubtitle}
       </p>
 
       {state === 'verifying' && (
@@ -76,12 +76,12 @@ export function Login({ token }: { token: string | null }) {
               placeholder="seuemail@exemplo.com" className="w-full bg-transparent py-3.5 text-[16px] outline-none" />
           </div>
           {error && <p className="mt-2 text-[13.5px] font-semibold text-red-700" role="alert">{error}</p>}
-          <button disabled={state === 'sending'} className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-amber py-4 text-[16px] font-extrabold text-white shadow-[0_6px_0_#9E4E0D] active:translate-y-[3px] active:shadow-[0_3px_0_#9E4E0D] disabled:opacity-70">
+          <button disabled={state === 'sending'} className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-amber py-4 text-[16px] font-extrabold text-white shadow-[0_6px_0_var(--color-amber-dark)] active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-amber-dark)] disabled:opacity-70">
             {state === 'sending' && <Loader2 className="h-5 w-5 animate-spin" />} Receber link de acesso
           </button>
         </form>
       )}
-      <p className="mt-auto pt-10 text-center text-[12px] text-bark/55">Problemas para entrar? Fale com o suporte: suporte@projetoscommadeira.com</p>
+      {brand?.supportEmail && <p className="mt-auto pt-10 text-center text-[12px] text-bark/55">Problemas para entrar? Fale com o suporte: {brand.supportEmail}</p>}
     </div>
   );
 }

@@ -65,7 +65,7 @@ export function DeliverablePage({ id }: { id: string }) {
       {d.locked ? (
         <div className="mt-5 space-y-3">
           <div className="flex items-center gap-2 rounded-2xl bg-white p-3 text-[13.5px] font-semibold text-bark shadow-sm">
-            <Lock className="h-4 w-4 text-amber" /> Este material faz parte do Pacote Completo.
+            <Lock className="h-4 w-4 text-amber" /> {me.settings.texts.lockedNotice}
           </div>
           {d.lockedOffer && <OfferCard offer={d.lockedOffer} placement="locked" refId={d.id} />}
         </div>
@@ -91,7 +91,7 @@ export function DeliverablePage({ id }: { id: string }) {
 
           {d.type === 'library' && (
             <div className="mt-6 space-y-3">
-              <h2 className="text-[17px] font-black text-ink">Coleções</h2>
+              <h2 className="text-[17px] font-black text-ink">{d.itemsTitle || me.settings.texts.itemsTitle}</h2>
               {d.items.map((it, i) => {
                 const ref = `${d.id}/${it.id}`;
                 const p = me.progress.find((x) => x.ref === ref);
@@ -100,7 +100,7 @@ export function DeliverablePage({ id }: { id: string }) {
                     <Link to={`/ler/${ref}`} className="flex gap-3 p-3">
                       {it.image && <img src={it.image} alt="" loading="lazy" className="h-20 w-20 shrink-0 rounded-xl object-cover" />}
                       <div className="min-w-0">
-                        <div className="text-[10.5px] font-bold uppercase tracking-wide text-amber-dark">Coleção {String(i + 1).padStart(2, '0')}</div>
+                        <div className="text-[10.5px] font-bold uppercase tracking-wide text-amber-dark">{d.itemLabel || me.settings.texts.itemLabel} {String(i + 1).padStart(2, '0')}</div>
                         <div className="text-[15px] font-extrabold leading-tight text-ink">{it.title}</div>
                         {it.subtitle && <div className="text-[12.5px] text-bark/65">{it.subtitle}</div>}
                         <div className="mt-1 line-clamp-1 text-[12px] text-bark/55">{it.highlights.join(' • ')}</div>

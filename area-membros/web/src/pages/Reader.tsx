@@ -152,7 +152,7 @@ export default function Reader({ id, item }: { id: string; item?: string }) {
 
   const width = Math.round((vw - 16) * zoom);
   return (
-    <div className="min-h-dvh bg-[#E9E2D6]">
+    <div className="min-h-dvh bg-line">
       <header className="sticky top-0 z-30 flex items-center gap-2 bg-bark px-2 py-2 text-white shadow">
         <Link to={`/conteudo/${id}`} aria-label="Voltar" className="grid h-10 w-10 place-items-center rounded-full hover:bg-white/10"><ChevronLeft className="h-6 w-6" /></Link>
         <div className="min-w-0 flex-1">

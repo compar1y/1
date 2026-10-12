@@ -5,15 +5,16 @@ import { Cover } from './Cover';
 import { Link } from './Link';
 import { OfferSheet } from './OfferSheet';
 import { useImpression } from '../lib/track';
+import { useMe } from '../state';
 
-export function progressLabel(d: Deliverable, progress: Progress[]) {
+export function progressLabel(d: Deliverable, progress: Progress[], itemsTitle: string) {
   const mine = progress.filter((p) => p.ref === d.id || p.ref.startsWith(d.id + '/'));
   if (d.type === 'library') {
     const done = mine.filter((p) => p.done_at && p.ref.includes('/')).length;
     const opened = mine.filter((p) => p.ref.includes('/')).length;
     if (done) return { text: `${done} de ${d.items.length} concluídas`, done: done === d.items.length };
     if (opened) return { text: `${opened} de ${d.items.length} abertas`, done: false };
-    return { text: `${d.items.length} coleções`, done: false };
+    return { text: `${d.items.length} ${(d.itemsTitle || itemsTitle).toLowerCase()}`, done: false };
   }
   const p = mine.find((x) => x.ref === d.id);
   if (p?.done_at) return { text: 'Concluído', done: true };
@@ -24,6 +25,8 @@ export function progressLabel(d: Deliverable, progress: Progress[]) {
 
 /** Card de conteúdo. Bloqueado: mostra o cadeado e abre a oferta que destrava. */
 export function DeliverableCard({ d, progress }: { d: Deliverable; progress: Progress[] }) {
+  const { me } = useMe();
+  const t = me!.settings.texts;
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
   const ref = useImpression<HTMLButtonElement>(d.locked ? d.lockedOffer?.id : undefined, 'locked', d.id);
@@ -45,7 +48,7 @@ export function DeliverableCard({ d, progress }: { d: Deliverable; progress: Pro
         {d.locked ? (
           <div className="mt-1.5 text-[11.5px] font-bold text-amber">Toque para destravar</div>
         ) : (
-          (() => { const p = progressLabel(d, progress); return (
+          (() => { const p = progressLabel(d, progress, t.itemsTitle); return (
             <div className={`mt-1.5 flex items-center gap-1 text-[11.5px] font-semibold ${p.done ? 'text-leaf' : 'text-bark/60'}`}>
               {p.done && <CheckCircle2 className="h-3.5 w-3.5" />} {p.text}
             </div>
@@ -60,7 +63,7 @@ export function DeliverableCard({ d, progress }: { d: Deliverable; progress: Pro
     return (
       <>
         <button ref={ref} type="button" className={cls + ' w-full'} onClick={() => setOpen(true)}>{inner}</button>
-        {open && <OfferSheet offer={d.lockedOffer} placement="locked" refId={d.id} onClose={close} intro={`🔒 "${d.title}" faz parte do Pacote Completo`} />}
+        {open && <OfferSheet offer={d.lockedOffer} placement="locked" refId={d.id} onClose={close} intro={t.lockedIntro.replace('{titulo}', d.title)} />}
       </>
     );
   }

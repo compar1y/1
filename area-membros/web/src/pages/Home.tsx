@@ -49,7 +49,7 @@ export function Home({ justBought }: { justBought: boolean }) {
   return (
     <Layout>
       <h1 className="text-[24px] font-black leading-tight text-ink">Olá{me.customer.firstName ? `, ${me.customer.firstName}` : ''}! 👋</h1>
-      <p className="mt-1 text-[14px] text-bark/70">O que vamos construir hoje?</p>
+      <p className="mt-1 text-[14px] text-bark/70">{me.settings.texts.homeSubtitle}</p>
 
       {waiting && (
         <div className="mt-4 flex items-center gap-3 rounded-2xl border border-leaf/30 bg-white p-4 text-[14px] font-semibold text-bark shadow-sm">
@@ -62,7 +62,7 @@ export function Home({ justBought }: { justBought: boolean }) {
         <Link to={`/ler/${cont.ref}`} className="mt-5 flex items-center gap-3 rounded-2xl bg-bark p-3 pr-4 text-white shadow-md">
           {cont.image ? <img src={cont.image} alt="" className="h-14 w-14 rounded-xl object-cover" /> : <span className="grid h-14 w-14 place-items-center rounded-xl bg-white/10"><BookOpenCheck /></span>}
           <div className="min-w-0 flex-1">
-            <div className="text-[11px] font-bold uppercase tracking-wide text-[#F2C79B]">Continue de onde parou</div>
+            <div className="text-[11px] font-bold uppercase tracking-wide text-white/75">Continue de onde parou</div>
             <div className="truncate text-[15px] font-extrabold">{cont.title}</div>
             {cont.page && cont.pages ? <div className="text-[12px] text-white/70">Página {cont.page} de {cont.pages}</div> : cont.parent && <div className="truncate text-[12px] text-white/70">{cont.parent}</div>}
           </div>
@@ -77,8 +77,8 @@ export function Home({ justBought }: { justBought: boolean }) {
 
       {!!locked.length && (
         <>
-          <SectionTitle>Bônus do Pacote Completo</SectionTitle>
-          <p className="-mt-2 mb-3 text-[13px] text-bark/70">Você ainda não tem estes materiais. Toque em um deles para ver como destravar.</p>
+          <SectionTitle>{me.settings.texts.lockedSection}</SectionTitle>
+          <p className="-mt-2 mb-3 text-[13px] text-bark/70">{me.settings.texts.lockedHint}</p>
           <div className="grid grid-cols-3 gap-2.5">
             {locked.map((d) => <DeliverableCard key={d.id} d={d} progress={me.progress} />)}
           </div>

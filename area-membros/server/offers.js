@@ -146,6 +146,7 @@ export function buildLibrary(cat, { customerId, firstName, products, now = Date.
     deliverables.push({
       id, type: d.type, title: d.title, subtitle: d.subtitle || null, description: d.description || null,
       image: d.image || null, icon: d.icon || null, order: d.order ?? 999,
+      itemLabel: d.itemLabel || null, itemsTitle: d.itemsTitle || null,
       owned, locked: !owned, lockedOffer,
       url: owned && d.type === 'link' ? d.url : null,
       hasFile: d.type === 'pdf' && !!d.file,

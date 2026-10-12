@@ -9,7 +9,7 @@
   --color-bark: #3F2A1E;
   --color-wood: #6F4528;
   --color-amber: #C86A1B;
-  --color-amber-dark: #9E4E0D;
+  --color-amber-dark: var(--color-amber-dark);
   --color-leaf: #008A5B;
 }
 

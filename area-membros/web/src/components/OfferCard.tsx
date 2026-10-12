@@ -25,7 +25,7 @@ export function OfferCard({ offer, placement, refId, variant = 'attached' }: Pro
   let body;
   if (variant === 'attached') {
     body = (
-      <div className="relative overflow-hidden rounded-2xl border-2 border-amber/40 bg-gradient-to-br from-[#FFF8EF] to-white p-4 text-left shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl border-2 border-amber/40 bg-gradient-to-br from-amber/5 to-white p-4 text-left shadow-sm">
         <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-amber/10 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wide text-amber-dark">
           <Sparkles className="h-3.5 w-3.5" /> {offer.badge || 'Próximo passo'}
         </div>

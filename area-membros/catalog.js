@@ -36,6 +36,8 @@
  * @property {string} [url]                 para type 'link'
  * @property {DeliverableItem[]} [items]    para type 'library'
  * @property {string} [lockedOffer]         quem NÃO tem este entregável o vê com cadeado e esta oferta para destravar
+ * @property {string} [itemsTitle]          título da lista de partes (ex.: 'Coleções', 'Módulos')
+ * @property {string} [itemLabel]           rótulo de cada parte (ex.: 'Coleção' vira 'Coleção 01')
  * @property {number} [order]
  *
  * @typedef {Object} Offer
@@ -69,6 +71,22 @@ export default {
     checkoutParams: { email: 'email', name: 'name' },
     // Ofertas por tela: home mostra até N em "Para você".
     homeOffers: 3,
+    // Identidade visual (cores do app e do e-mail) e imagem da tela de login
+    brand: {
+      loginImage: '/assets/basic-mockup.webp',
+      colors: { primary: '#C86A1B', primaryDark: '#9E4E0D', dark: '#3F2A1E', mid: '#6F4528', bg: '#F5F0E7', paper: '#FAF7F2', line: '#E8DDD0', ink: '#171512', success: '#008A5B' },
+    },
+    // Textos do app que dependem do produto ({titulo} = nome do conteúdo)
+    texts: {
+      homeSubtitle: 'O que vamos construir hoje?',
+      lockedSection: 'Bônus do Pacote Completo',
+      lockedHint: 'Você ainda não tem estes materiais. Toque em um deles para ver como destravar.',
+      lockedIntro: '🔒 "{titulo}" faz parte do Pacote Completo',
+      lockedNotice: 'Este material faz parte do Pacote Completo.',
+      storeIntro: 'Materiais para ir além dos seus projetos. Depois da compra, eles aparecem aqui no app automaticamente.',
+      installHint: 'Fica com um ícone na tela inicial e abre direto nos seus projetos, sem precisar procurar o e-mail.',
+      welcomeEmail: 'Seu acesso está liberado. Toque no botão abaixo para entrar e começar pelos seus projetos.',
+    },
   },
 
   /** @type {Record<string, Product>} */
@@ -137,6 +155,8 @@ export default {
     'projetos-100': {
       order: 1,
       type: 'library',
+      itemsTitle: 'Coleções',
+      itemLabel: 'Coleção',
       title: '+100 Projetos com Madeira',
       subtitle: '5 coleções • 100 projetos com medidas e passo a passo',
       image: '/assets/basic-mockup.webp',

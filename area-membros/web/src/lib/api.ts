@@ -41,16 +41,28 @@ export type Deliverable = {
   offer: Offer | null;
   endOffer: Offer | null;
   items: Item[];
+  itemLabel: string | null;
+  itemsTitle: string | null;
 };
 
 export type Progress = { ref: string; opened_at: number | null; last_page: number | null; pages: number | null; done_at: number | null; updated_at: number };
+
+export type Brand = {
+  appName: string;
+  shortName: string;
+  supportEmail: string | null;
+  loginImage: string | null;
+  icon: string;
+  colors: Record<'primary' | 'primaryDark' | 'dark' | 'mid' | 'bg' | 'paper' | 'line' | 'ink' | 'success', string>;
+  texts: Record<'homeSubtitle' | 'lockedSection' | 'lockedHint' | 'lockedIntro' | 'lockedNotice' | 'storeIntro' | 'installHint' | 'welcomeEmail' | 'loginSubtitle' | 'itemsTitle' | 'itemLabel', string>;
+};
 
 export type Me = {
   customer: { email: string; name: string | null; firstName: string };
   products: string[];
   library: { deliverables: Deliverable[]; home: Offer[]; store: Offer[] };
   progress: Progress[];
-  settings: { appName: string; supportEmail: string };
+  settings: Brand;
 };
 
 export class ApiError extends Error {

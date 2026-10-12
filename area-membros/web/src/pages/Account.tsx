@@ -24,7 +24,7 @@ export function Account() {
   return (
     <Layout title="Minha conta">
       <div className="rounded-2xl bg-white p-4 shadow-sm">
-        <div className="text-[18px] font-extrabold text-ink">{me.customer.name || 'Aluno'}</div>
+        <div className="text-[18px] font-extrabold text-ink">{me.customer.name || me.customer.email.split('@')[0]}</div>
         <div className="text-[14px] text-bark/70">{me.customer.email}</div>
       </div>
 
@@ -32,7 +32,7 @@ export function Account() {
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
           <div className="flex items-center gap-2 text-[15px] font-extrabold text-ink"><Smartphone className="h-5 w-5 text-amber" /> Instale o app no celular</div>
           <p className="mt-1 text-[13.5px] leading-relaxed text-bark/75">
-            Fica com um ícone na tela inicial e abre direto nos seus projetos, sem precisar procurar o e-mail.
+            {me.settings.texts.installHint}
           </p>
           {canInstall ? (
             <button onClick={async () => { await deferred?.prompt(); deferred = null; setCanInstall(false); }}
@@ -47,9 +47,9 @@ export function Account() {
         </div>
       )}
 
-      <a href={`mailto:${me.settings.supportEmail}`} className="mt-4 flex items-center gap-2 rounded-2xl bg-white p-4 text-[14px] font-bold text-bark shadow-sm">
+      {me.settings.supportEmail && <a href={`mailto:${me.settings.supportEmail}`} className="mt-4 flex items-center gap-2 rounded-2xl bg-white p-4 text-[14px] font-bold text-bark shadow-sm">
         <LifeBuoy className="h-5 w-5 text-amber" /> Suporte: {me.settings.supportEmail}
-      </a>
+      </a>}
       <button
         onClick={async () => { await api('/api/auth/logout', {}); setMe(null); navigate('/entrar'); location.reload(); }}
         className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-line py-3 text-[14px] font-bold text-bark">
