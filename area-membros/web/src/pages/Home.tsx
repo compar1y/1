@@ -17,7 +17,7 @@ function continueReading(me: Me) {
     if (!d || d.type === 'link') continue;
     const item = iid ? d.items.find((i) => i.id === iid) : null;
     if (iid && !item) continue;
-    return { ref: p.ref, title: item?.title || d.title, parent: item ? d.title : null, image: item?.image || d.image, page: p.last_page, pages: p.pages };
+    return { ref: p.ref, title: item?.title || d.title, parent: item ? d.title : null, image: item?.image || d.image, icon: item?.icon || d.icon, page: p.last_page, pages: p.pages };
   }
   return null;
 }
@@ -60,7 +60,7 @@ export function Home({ justBought }: { justBought: boolean }) {
 
       {cont && (
         <Link to={`/ler/${cont.ref}`} className="mt-5 flex items-center gap-3 rounded-2xl bg-bark p-3 pr-4 text-white shadow-md">
-          {cont.image ? <img src={cont.image} alt="" className="h-14 w-14 rounded-xl object-cover" /> : <span className="grid h-14 w-14 place-items-center rounded-xl bg-white/10"><BookOpenCheck /></span>}
+          {cont.image ? <img src={cont.image} alt="" className="h-14 w-14 rounded-xl object-cover" /> : <span className="grid h-14 w-14 place-items-center rounded-xl bg-white/10 text-[26px]">{cont.icon || <BookOpenCheck />}</span>}
           <div className="min-w-0 flex-1">
             <div className="text-[11px] font-bold uppercase tracking-wide text-white/75">Continue de onde parou</div>
             <div className="truncate text-[15px] font-extrabold">{cont.title}</div>

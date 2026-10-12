@@ -34,6 +34,7 @@ export function brand(cat) {
     shortName: s.shortName || s.appName || 'Membros',
     supportEmail: s.supportEmail || null,
     loginImage: s.brand?.loginImage || null,
+    loginIcon: s.brand?.loginIcon || null,
     icon: s.brand?.icon || '/icon.svg',
     colors: { ...DEFAULT_COLORS, ...(s.brand?.colors || {}) },
     texts: { ...DEFAULT_TEXTS, ...(s.texts || {}) },

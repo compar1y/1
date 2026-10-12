@@ -26,6 +26,7 @@ export function validateCatalog(cat) {
   for (const [id, d] of Object.entries(deliverables)) {
     if (!['library', 'pdf', 'link'].includes(d.type)) errors.push(`entregável "${id}": type inválido (${d.type})`);
     if (d.type === 'library' && !d.items?.length) errors.push(`entregável "${id}": library sem items`);
+    for (const it of d.items || []) if (!it.file && !d.file) errors.push(`entregável "${id}": parte "${it.id}" sem arquivo (defina file na parte ou no entregável)`);
     if (d.type === 'link' && !d.url) errors.push(`entregável "${id}": link sem url`);
     if (d.lockedOffer && !offers[d.lockedOffer]) errors.push(`entregável "${id}": lockedOffer "${d.lockedOffer}" não existe`);
     if (!Object.values(products).some((p) => p.grants?.includes(id))) errors.push(`entregável "${id}": nenhum produto libera este entregável`);
@@ -153,8 +154,8 @@ export function buildLibrary(cat, { customerId, firstName, products, now = Date.
       offer: owned ? attached(id, 'inline') : null,
       endOffer: owned ? attached(id, 'end') : null,
       items: (d.items || []).map((it) => ({
-        id: it.id, title: it.title, subtitle: it.subtitle || null, image: it.image || null,
-        highlights: it.highlights || [], hasFile: !!it.file,
+        id: it.id, title: it.title, subtitle: it.subtitle || null, image: it.image || null, icon: it.icon || null,
+        highlights: it.highlights || [], hasFile: !!(it.file || d.file), page: it.file ? null : it.page || null,
         offer: owned ? attached(`${id}/${it.id}`, 'inline') : null,
         endOffer: owned ? attached(`${id}/${it.id}`, 'end') : null,
       })),
@@ -175,7 +176,8 @@ export function fileFor(cat, deliverableId, itemId, ownedDels) {
   if (!d || !ownedDels.has(deliverableId)) return null;
   if (itemId) {
     const it = d.items?.find((i) => i.id === itemId);
-    return it?.file ? { file: it.file, title: it.title, parent: d.title } : null;
+    const file = it && (it.file || d.file);
+    return file ? { file, title: it.title, parent: d.title } : null;
   }
   return d.file ? { file: d.file, title: d.title } : null;
 }

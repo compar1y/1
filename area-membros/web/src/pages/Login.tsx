@@ -41,7 +41,8 @@ export function Login({ token }: { token: string | null }) {
         <img src={brand?.icon || '/icon.svg'} alt="" className="h-9 w-9 rounded-xl" />
         <span className="text-[14px] font-extrabold text-bark">{brand?.appName}</span>
       </div>
-      {brand?.loginImage && <img src={brand.loginImage} alt="" className="mx-auto mt-6 h-[200px] w-auto object-contain drop-shadow-xl" />}
+      {brand?.loginImage ? <img src={brand.loginImage} alt="" className="mx-auto mt-6 h-[200px] w-auto object-contain drop-shadow-xl" />
+        : brand?.loginIcon && <div className="mx-auto mt-8 grid h-32 w-32 place-items-center rounded-full bg-gradient-to-br from-wood to-amber text-[64px] shadow-xl" aria-hidden>{brand.loginIcon}</div>}
       <h1 className="mt-6 text-[28px] font-black leading-[1.1] text-ink">Sua área de membros</h1>
       <p className="mt-2 text-[15px] leading-relaxed text-bark/80">
         {brand?.texts.loginSubtitle}

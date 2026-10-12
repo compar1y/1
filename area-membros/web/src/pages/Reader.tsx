@@ -85,7 +85,7 @@ export default function Reader({ id, item }: { id: string; item?: string }) {
       const v = first.getViewport({ scale: 1 });
       setRatio(v.height / v.width);
       setDoc(pdf);
-      api('/api/progress', { ref, page: saved?.last_page || 1, pages: pdf.numPages }).catch(() => {});
+      api('/api/progress', { ref, page: saved?.last_page || it?.page || 1, pages: pdf.numPages }).catch(() => {});
     }).catch(() => !destroyed && setError('Não foi possível abrir o arquivo. Verifique sua internet ou use o botão de baixar.'));
     return () => { destroyed = true; task.destroy(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,9 +119,10 @@ export default function Reader({ id, item }: { id: string; item?: string }) {
   useEffect(() => {
     if (!doc || resumed.current) return;
     resumed.current = true;
-    const target = saved?.last_page && !saved.done_at ? Math.min(saved.last_page, doc.numPages) : 1;
+    // Sem progresso salvo, uma parte que aponta para uma página do e-book abre nela
+    const target = Math.min(saved?.last_page && !saved.done_at ? saved.last_page : it?.page || 1, doc.numPages);
     if (target > 1) requestAnimationFrame(() => document.querySelector(`[data-page="${target}"]`)?.scrollIntoView());
-  }, [doc, saved]);
+  }, [doc, saved, it]);
 
   // Salva a página (com atraso, para não chamar a API a cada rolagem) e mostra a oferta ao terminar
   useEffect(() => {

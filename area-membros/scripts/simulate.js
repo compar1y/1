@@ -55,8 +55,10 @@ const now = Date.now();
 const rnd = (a, b) => a + Math.random() * (b - a);
 const chance = (p) => Math.random() < p;
 const names = ['Ana', 'Bruno', 'Carla', 'Diego', 'Elaine', 'Fábio', 'Gisele', 'Hugo', 'Isabel', 'João', 'Karina', 'Lucas', 'Marina', 'Nelson', 'Olívia', 'Paulo', 'Rafaela', 'Sérgio', 'Tânia', 'Vitor'];
-// Chance de compra depois do clique, por oferta (só para o painel ter números diferentes)
-const conv = { 'upgrade-completo': 0.38, 'natal-15': 0.3, 'planilha-precificacao': 0.22, 'pack-divulgacao': 0.2, 'planos-de-corte': 0.15, 'premium-encomenda': 0.12, 'jardim-primavera': 0.18 };
+// Chance de compra depois do clique: aleatória por oferta (só para o painel ter números diferentes)
+const conv = Object.fromEntries(Object.keys(cat.offers).map((id) => [id, rnd(0.1, 0.4)]));
+const front = Object.keys(cat.products).filter((id) => cat.products[id].frontEnd);
+if (!front.length) { console.error('Marque pelo menos um produto com frontEnd: true no catalog.js.'); process.exit(1); }
 const ctr = { inline: 0.16, end: 0.22, home: 0.08, store: 0.12, locked: 0.25 };
 
 const N = Number(flag('--clientes')) || 400;
@@ -66,7 +68,7 @@ for (let i = 0; i < N; i++) {
   const email = `teste${i + 1}@exemplo.com`;
   const t0 = now - rnd(0, 30) * DAY;
   const c = getOrCreateCustomer(email, `${names[i % names.length]} Teste`, t0);
-  const entry = chance(0.58) ? 'basico' : 'completo';
+  const entry = front[chance(0.58) ? 0 : front.length - 1];
   recordPurchase(cat, { customerId: c.id, productId: entry, txId: `sim-${i}-${entry}`, status: chance(0.03) ? 'refunded' : 'approved', value: cat.products[entry].price, source: 'simulate', now: t0 });
   purchases++;
   if (!chance(0.72)) continue; // nem todo mundo abre o app
@@ -113,12 +115,11 @@ const demo = (email, name, products) => {
   return token;
 };
 const base = (process.env.PUBLIC_URL || 'http://localhost:5173').replace(/\/$/, '');
-const tb = demo('basico@teste.com', 'Maria Básico', ['basico']);
-const tc = demo('completo@teste.com', 'João Completo', ['completo']);
+const demos = front.map((id) => [id, demo(`${id}@teste.com`, `Cliente ${cat.products[id].name}`, [id])]);
 
 console.log(`✓ ${N} clientes, ${purchases} compras (${back} no back-end) nos últimos 30 dias.\n`);
 console.log('Entrar como cliente de teste (cada link funciona uma vez):');
-console.log(`  Pacote Básico:   ${base}/entrar?t=${tb}`);
-console.log(`  Pacote Completo: ${base}/entrar?t=${tc}`);
+for (const [id, t] of demos) console.log(`  ${cat.products[id].name.padEnd(16)} ${base}/entrar?t=${t}   (${id}@teste.com)`);
 console.log('\nSimular uma compra feita dentro do app (com o servidor rodando):');
-console.log('  npm run simulate -- --compra basico@teste.com upgrade-completo');
+const firstBack = Object.values(cat.offers).find((o) => o.audience?.requires?.includes(front[0]))?.product || Object.values(cat.offers)[0]?.product;
+console.log(`  npm run simulate -- --compra ${front[0]}@teste.com ${firstBack}`);

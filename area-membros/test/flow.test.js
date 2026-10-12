@@ -10,6 +10,7 @@ const contentDir = fs.mkdtempSync(path.join(os.tmpdir(), 'am-content-'));
 process.env.DATA_DIR = dir;
 process.env.CONTENT_DIR = contentDir;
 process.env.NO_LISTEN = '1';
+process.env.CATALOG_PATH = path.join(import.meta.dirname, 'fixtures', 'catalog-exemplo.js');
 process.env.WEBHOOK_TOKEN = 'tok_test_123';
 process.env.ADMIN_PASSWORD = 'admin-teste';
 delete process.env.RESEND_API_KEY;

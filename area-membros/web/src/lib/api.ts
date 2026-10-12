@@ -19,8 +19,10 @@ export type Item = {
   title: string;
   subtitle: string | null;
   image: string | null;
+  icon: string | null;
   highlights: string[];
   hasFile: boolean;
+  page: number | null;
   offer: Offer | null;
   endOffer: Offer | null;
 };
@@ -52,6 +54,7 @@ export type Brand = {
   shortName: string;
   supportEmail: string | null;
   loginImage: string | null;
+  loginIcon: string | null;
   icon: string;
   colors: Record<'primary' | 'primaryDark' | 'dark' | 'mid' | 'bg' | 'paper' | 'line' | 'ink' | 'success', string>;
   texts: Record<'homeSubtitle' | 'lockedSection' | 'lockedHint' | 'lockedIntro' | 'lockedNotice' | 'storeIntro' | 'installHint' | 'welcomeEmail' | 'loginSubtitle' | 'itemsTitle' | 'itemLabel', string>;

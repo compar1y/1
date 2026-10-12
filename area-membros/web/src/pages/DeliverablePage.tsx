@@ -98,7 +98,7 @@ export function DeliverablePage({ id }: { id: string }) {
                 return (
                   <div key={it.id} className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
                     <Link to={`/ler/${ref}`} className="flex gap-3 p-3">
-                      {it.image && <img src={it.image} alt="" loading="lazy" className="h-20 w-20 shrink-0 rounded-xl object-cover" />}
+                      {(it.image || it.icon) && <Cover image={it.image} icon={it.icon} title={it.title} className="h-20 w-20 shrink-0 rounded-xl text-[15px]" />}
                       <div className="min-w-0">
                         <div className="text-[10.5px] font-bold uppercase tracking-wide text-amber-dark">{d.itemLabel || me.settings.texts.itemLabel} {String(i + 1).padStart(2, '0')}</div>
                         <div className="text-[15px] font-extrabold leading-tight text-ink">{it.title}</div>

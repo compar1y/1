@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import cat from '../catalog.js';
+import cat from './fixtures/catalog-exemplo.js';
 import { parseSale, parsePayload } from '../server/webhook.js';
 
 test('reconhece compra aprovada com código do checkout, e-mail, valor e clique', () => {

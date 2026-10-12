@@ -112,7 +112,7 @@ export function warnings(cat, contentDir) {
   const files = [];
   for (const d of Object.values(cat.deliverables)) {
     if (d.file) files.push(d.file);
-    for (const it of d.items || []) if (it.file) files.push(it.file);
+    for (const it of d.items || []) if (it.file && !files.includes(it.file)) files.push(it.file);
     if (d.type === 'link' && isPlaceholderUrl(d.url)) w.push({ level: 'warn', text: `Entregável "${d.title}" com link provisório.` });
   }
   const missing = files.filter((f) => !fs.existsSync(path.join(contentDir, f)));

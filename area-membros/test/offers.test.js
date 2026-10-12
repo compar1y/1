@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import cat from '../catalog.js';
+import cat from './fixtures/catalog-exemplo.js';
+import realCatalog from '../catalog.js';
 import { validateCatalog, buildLibrary, isEligible, ownedDeliverables, rank, pickAttached } from '../server/offers.js';
 
 const NOV = Date.parse('2026-11-10T15:00:00-03:00');
@@ -9,8 +10,9 @@ const ctxFor = (products, now = NOV) => {
   return { customerId: 'c1', products: p, deliverables: ownedDeliverables(cat, p), now };
 };
 
-test('o catálogo de exemplo é válido', () => {
+test('o catálogo de exemplo e o catálogo real do app são válidos', () => {
   assert.deepEqual(validateCatalog(cat), []);
+  assert.deepEqual(validateCatalog(realCatalog), []);
 });
 
 test('validação aponta referências quebradas', () => {
@@ -78,4 +80,22 @@ test('placements restringem onde a oferta aparece', () => {
   assert.ok(!lib.home.some((o) => o.id === 'natal-15'));
   assert.ok(lib.store.some((o) => o.id === 'natal-15'));
   assert.notEqual(lib.deliverables.find((d) => d.id === 'projetos-100').offer?.id, 'natal-15');
+});
+
+test('catálogo dos panetones: Essencial vê 7 bônus com cadeado; categorias abrem o e-book na página certa', async () => {
+  const { fileFor } = await import('../server/offers.js');
+  const lib = buildLibrary(realCatalog, { customerId: 'c1', products: ['essencial'], now: NOV });
+  assert.equal(lib.deliverables.filter((d) => d.locked).length, 7);
+  const receitas = lib.deliverables.find((d) => d.id === 'receitas-100');
+  assert.equal(receitas.offer.id, 'upgrade-completo');
+  assert.ok(receitas.items.every((i) => i.hasFile && i.page));
+  const owned = ownedDeliverables(realCatalog, new Set(['essencial']));
+  assert.equal(fileFor(realCatalog, 'receitas-100', 'chocotones', owned).file, 'receitas-100-panetones.pdf');
+  assert.equal(fileFor(realCatalog, 'guia-embalagem', null, owned), null);
+  // Kit Completo: sem upgrade, e a oferta das 15 mais pedidas aparece nas receitas
+  const full = buildLibrary(realCatalog, { customerId: 'c1', products: ['completo'], now: NOV });
+  assert.equal(full.deliverables.find((d) => d.id === 'receitas-100').offer.id, 'top-15-natal');
+  // Depois do Natal entra a Páscoa
+  const jan = buildLibrary(realCatalog, { customerId: 'c1', products: ['completo'], now: Date.parse('2027-01-10T12:00:00-03:00') });
+  assert.equal(jan.deliverables.find((d) => d.id === 'receitas-100').offer.id, 'pascoa-ovos');
 });
