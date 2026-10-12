@@ -13,7 +13,8 @@ function wrap(text, max) {
   return out;
 }
 
-export function placeholderPdf({ title, parent, file }) {
+/** Mesmo PDF como string latin1 (1 caractere = 1 byte): funciona no Node e no navegador. */
+export function placeholderPdfString({ title, parent, file }) {
   const pages = [
     [[parent || 'Área de membros', 13, 70, 760, '0.62 0.31 0.05'], ...wrap(title, 30).map((l, i) => [l, 26, 70, 715 - i * 32, '0.09 0.08 0.07']),
       ['Arquivo provisório', 14, 70, 560, '0.25 0.16 0.12'],
@@ -29,16 +30,18 @@ export function placeholderPdf({ title, parent, file }) {
   for (const lines of pages) {
     const stream = '0.96 0.94 0.91 rg 0 0 595 842 re f 0.78 0.42 0.11 rg 0 822 595 20 re f\n' +
       lines.map(([t, size, x, y, color]) => `BT ${color} rg /F1 ${size} Tf ${x} ${y} Td (${enc(t)}) Tj ET`).join('\n');
-    const content = add(`<< /Length ${Buffer.byteLength(stream, 'latin1')} >>\nstream\n${stream}\nendstream`);
+    const content = add(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
     kids.push(add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ${font} 0 R >> >> /Contents ${content} 0 R >>`));
   }
   add(`<< /Type /Pages /Kids [${kids.map((k) => k + ' 0 R').join(' ')}] /Count ${kids.length} >>`);
   const catalog = add(`<< /Type /Catalog /Pages ${pagesId} 0 R >>`);
   let out = '%PDF-1.4\n%\xe2\xe3\xcf\xd3\n';
   const offsets = [];
-  objs.forEach((o, i) => { offsets.push(Buffer.byteLength(out, 'latin1')); out += `${i + 1} 0 obj\n${o}\nendobj\n`; });
-  const xref = Buffer.byteLength(out, 'latin1');
+  objs.forEach((o, i) => { offsets.push(out.length); out += `${i + 1} 0 obj\n${o}\nendobj\n`; });
+  const xref = out.length;
   out += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n` + offsets.map((o) => String(o).padStart(10, '0') + ' 00000 n \n').join('');
   out += `trailer\n<< /Size ${objs.length + 1} /Root ${catalog} 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
-  return Buffer.from(out, 'latin1');
+  return out;
 }
+
+export const placeholderPdf = (opts) => Buffer.from(placeholderPdfString(opts), 'latin1');

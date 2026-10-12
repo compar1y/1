@@ -1,10 +1,10 @@
 import type { AnchorHTMLAttributes, MouseEvent } from 'react';
-import { navigate } from '../lib/router';
+import { hrefFor, navigate } from '../lib/router';
 
 export function Link({ to, onClick, ...rest }: AnchorHTMLAttributes<HTMLAnchorElement> & { to: string }) {
   return (
     <a
-      href={to}
+      href={hrefFor(to)}
       {...rest}
       onClick={(e: MouseEvent<HTMLAnchorElement>) => {
         onClick?.(e);

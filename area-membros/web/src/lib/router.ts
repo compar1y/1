@@ -1,22 +1,39 @@
 import { useEffect, useState } from 'react';
+import { STATIC } from './api';
+
+// Na versão de arquivo único as rotas ficam depois do # (funciona em qualquer hospedagem e até abrindo o arquivo direto).
+function current() {
+  if (!STATIC) return { path: location.pathname, search: location.search };
+  const h = location.hash.replace(/^#/, '') || '/';
+  const i = h.indexOf('?');
+  return { path: i >= 0 ? h.slice(0, i) : h, search: i >= 0 ? h.slice(i) : '' };
+}
+export const hrefFor = (to: string) => (STATIC ? '#' + to : to);
+
+/** Troca o endereço sem navegar (ex.: tirar o ?comprou=1). */
+export function replaceUrl(to: string) {
+  history.replaceState(null, '', STATIC ? location.pathname + location.search + '#' + to : to);
+}
 
 // Roteador mínimo (history API): o app tem poucas telas e não precisa de dependência.
 const listeners = new Set<() => void>();
 
 export function navigate(to: string, opts: { replace?: boolean } = {}) {
-  if (to === location.pathname + location.search) return;
-  history[opts.replace ? 'replaceState' : 'pushState'](null, '', to);
+  const cur = current();
+  if (to === cur.path + cur.search) return;
+  history[opts.replace ? 'replaceState' : 'pushState'](null, '', hrefFor(to));
   window.scrollTo(0, 0);
   listeners.forEach((l) => l());
 }
 
 export function useLocation() {
-  const [loc, setLoc] = useState(() => ({ path: location.pathname, search: location.search }));
+  const [loc, setLoc] = useState(current);
   useEffect(() => {
-    const update = () => setLoc({ path: location.pathname, search: location.search });
+    const update = () => setLoc(current());
     listeners.add(update);
     window.addEventListener('popstate', update);
-    return () => { listeners.delete(update); window.removeEventListener('popstate', update); };
+    window.addEventListener('hashchange', update);
+    return () => { listeners.delete(update); window.removeEventListener('popstate', update); window.removeEventListener('hashchange', update); };
   }, []);
   return loc;
 }

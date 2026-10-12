@@ -4,3 +4,4 @@ data
 content/*.pdf
 .env
 data-demo
+web/dist-static

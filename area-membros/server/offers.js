@@ -2,7 +2,7 @@
 // Funções puras (sem banco), para serem testadas isoladamente.
 
 export const PLACEMENTS = ['inline', 'end', 'home', 'store', 'locked'];
-const TZ = process.env.TZ_APP || 'America/Sao_Paulo';
+const TZ = globalThis.process?.env?.TZ_APP || 'America/Sao_Paulo';
 const dayFmt = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' });
 
 /** 'AAAA-MM-DD' no fuso de São Paulo */

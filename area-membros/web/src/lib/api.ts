@@ -75,7 +75,14 @@ export class ApiError extends Error {
   constructor(public status: number, message: string) { super(message); }
 }
 
+/** Build de arquivo único (npm run build:static): sem servidor, a API roda no navegador. */
+export const STATIC = import.meta.env.VITE_STATIC === '1';
+
 export async function api<T = any>(path: string, body?: unknown): Promise<T> {
+  if (STATIC) {
+    const mock = await import('../static/mock');
+    try { return (await mock.handle(path, body)) as T; } catch (e: any) { throw new ApiError(e.status || 500, e.message); }
+  }
   const res = await fetch(path, body === undefined
     ? { credentials: 'same-origin' }
     : { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
@@ -83,6 +90,24 @@ export async function api<T = any>(path: string, body?: unknown): Promise<T> {
   try { data = await res.json(); } catch { /* sem corpo */ }
   if (!res.ok) throw new ApiError(res.status, data?.error || 'Não foi possível conectar. Tente de novo.');
   return data as T;
+}
+
+/** Abre o PDF no leitor: URL do servidor, ou os bytes gerados no navegador na versão sem servidor. */
+export async function pdfSource(ref: string): Promise<{ url: string } | { data: Uint8Array }> {
+  if (STATIC) return { data: (await import('../static/mock')).pdfBytes(ref) };
+  return { url: fileUrl(ref) };
+}
+
+/** Baixar o PDF (na versão sem servidor, gera o arquivo aqui). Devolve true se tratou o clique. */
+export async function downloadStatic(ref: string) {
+  if (!STATIC) return false;
+  const bytes = (await import('../static/mock')).pdfBytes(ref);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([bytes as BlobPart], { type: 'application/pdf' }));
+  a.download = ref.replace(/\//g, '-') + '.pdf';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  return true;
 }
 
 export const fileUrl = (ref: string, download = false) => `/api/files/${ref}${download ? '?download=1' : ''}`;

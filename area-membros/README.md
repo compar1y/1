@@ -126,6 +126,10 @@ O botão da oferta passa por `/go/<oferta>`, que registra o clique e redireciona
 
 Quando a Wiapy devolve o `src`/`sck` no webhook, a venda é ligada ao clique exato. Se não devolver, a venda é atribuída ao último clique do cliente numa oferta daquele produto nos últimos 14 dias.
 
+## Arquivo único para visualizar (sem servidor)
+
+`npm run build:static` gera `web/dist-static/index.html`: um HTML só, com o app, o catálogo, os dados de exemplo e o painel. As rotas da API rodam no próprio navegador, usando o mesmo motor de ofertas, e os dados ficam no `localStorage` de quem abriu. Dá para abrir com dois cliques ou arrastar para a [Netlify Drop](https://app.netlify.com/drop) ou a [tiiny.host](https://tiiny.host). Painel: `#/admin`, senha `demo`.
+
 ## Ver na Vercel (modo demonstração)
 
 Para só visualizar, sem clientes reais. A Vercel não guarda arquivos, então nesse modo o banco fica na memória temporária e é recriado com dados de exemplo sempre que a função "acorda":

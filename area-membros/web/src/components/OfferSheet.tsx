@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { Check, X, Lock, ShieldCheck } from 'lucide-react';
 import type { Offer } from '../lib/api';
-import { goUrl } from '../lib/api';
+import { api, goUrl, STATIC } from '../lib/api';
+import { navigate } from '../lib/router';
 import { brl, endsIn } from '../lib/format';
 import { trackOffer } from '../lib/track';
 import { Cover } from './Cover';
@@ -53,6 +54,7 @@ export function OfferSheet({ offer, placement, refId, onClose, intro }: { offer:
           </div>
           <a
             href={goUrl(offer.id, placement, refId)}
+            onClick={STATIC ? async (e) => { e.preventDefault(); await api('/go', { offerId: offer.id, placement, ref: refId }); onClose(); navigate('/?comprou=1'); } : undefined}
             className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-amber px-5 py-4 text-center text-[16px] font-extrabold text-white shadow-[0_6px_0_var(--color-amber-dark)] active:translate-y-[3px] active:shadow-[0_3px_0_var(--color-amber-dark)]"
           >
             <Lock className="h-4 w-4" /> {offer.cta}

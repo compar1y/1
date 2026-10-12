@@ -5,6 +5,7 @@ import { DeliverableCard } from '../components/DeliverableCard';
 import { OfferCard } from '../components/OfferCard';
 import { Link } from '../components/Link';
 import { useMe } from '../state';
+import { replaceUrl } from '../lib/router';
 import type { Me } from '../lib/api';
 
 /** Último conteúdo aberto e não concluído, para "Continue de onde parou". */
@@ -38,7 +39,7 @@ export function Home({ justBought }: { justBought: boolean }) {
       if (recent.length || ++n >= 30) {
         setWaiting(false);
         if (recent.length) setUnlocked([...new Set(recent.flatMap((r) => r.titles))]);
-        history.replaceState(null, '', '/');
+        replaceUrl('/');
         return;
       }
       t = window.setTimeout(check, 4000);

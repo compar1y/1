@@ -5,6 +5,9 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+// O e-mail (sem RESEND_API_KEY) é impresso no stdout, que o test runner também usa: silenciar evita mensagens corrompidas.
+console.log = () => {};
+
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'am-test-'));
 const contentDir = fs.mkdtempSync(path.join(os.tmpdir(), 'am-content-'));
 process.env.DATA_DIR = dir;

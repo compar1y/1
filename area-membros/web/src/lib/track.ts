@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { api, STATIC } from './api';
 
 // Impressões e aberturas de oferta, em lote. O clique é medido no servidor (/go).
 type Ev = { type: 'impression' | 'open'; offerId: string; placement: string; ref?: string };
@@ -10,6 +11,7 @@ function flush() {
   timer = undefined;
   if (!queue.length) return;
   const events = queue.splice(0, 50);
+  if (STATIC) { api('/api/events', { events }).catch(() => {}); return; }
   fetch('/api/events', { method: 'POST', keepalive: true, credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ events }) }).catch(() => {});
 }
 addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });

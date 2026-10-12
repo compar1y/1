@@ -297,7 +297,7 @@ export function Admin() {
 
       {!!data.warnings.length && (
         <details className="mt-4 rounded-2xl border border-amber/30 bg-white p-3" open={data.warnings.some((w) => w.level === 'error')}>
-          <summary className="cursor-pointer text-[13.5px] font-bold text-amber-dark">{data.warnings.length} pendências de configuração</summary>
+          <summary className="cursor-pointer text-[13.5px] font-bold text-amber-dark">{data.warnings.length} {data.warnings.length === 1 ? "pendência" : "pendências"} de configuração</summary>
           <ul className="mt-2 space-y-1.5">
             {data.warnings.map((w, i) => <li key={i} className="flex gap-2 text-[12.5px] text-bark">{icon[w.level]} {w.text}</li>)}
           </ul>

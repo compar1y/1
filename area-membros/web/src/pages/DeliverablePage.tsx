@@ -5,7 +5,7 @@ import { OfferCard } from '../components/OfferCard';
 import { OfferSheet } from '../components/OfferSheet';
 import { Cover } from '../components/Cover';
 import { Link } from '../components/Link';
-import { api, fileUrl, type Offer, type Progress } from '../lib/api';
+import { api, downloadStatic, fileUrl, STATIC, type Offer, type Progress } from '../lib/api';
 import { useMe } from '../state';
 
 /** Baixar: inicia o download e, se houver oferta de "fim", aproveita o momento ("enquanto baixa…"). */
@@ -14,7 +14,7 @@ export function DownloadButton({ refId, endOffer, className = '', label = 'Baixa
   const close = useCallback(() => setOpen(false), []);
   return (
     <>
-      <a href={fileUrl(refId, true)} download aria-label={label || "Baixar"} onClick={() => endOffer && setTimeout(() => setOpen(true), 600)} className={className}>
+      <a href={fileUrl(refId, true)} download aria-label={label || "Baixar"} onClick={(e) => { if (STATIC) { e.preventDefault(); downloadStatic(refId); } if (endOffer) setTimeout(() => setOpen(true), 600); }} className={className}>
         <Download className="h-4 w-4" /> {label}
       </a>
       {open && endOffer && <OfferSheet offer={endOffer} placement="end" refId={refId} onClose={close} intro="✅ Seu download começou" />}

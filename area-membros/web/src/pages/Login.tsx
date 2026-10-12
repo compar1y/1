@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Loader2, Mail, MailCheck } from 'lucide-react';
 import { api } from '../lib/api';
-import { navigate } from '../lib/router';
+import { navigate, replaceUrl } from '../lib/router';
+import { Link } from '../components/Link';
 import { useMe } from '../state';
 
 export function Login({ token }: { token: string | null }) {
@@ -17,7 +18,7 @@ export function Login({ token }: { token: string | null }) {
     verified.current = true;
     api('/api/auth/verify', { token })
       .then(async () => { await refresh(); navigate('/', { replace: true }); })
-      .catch((e) => { setError(e.message); setState('idle'); history.replaceState(null, '', '/entrar'); });
+      .catch((e) => { setError(e.message); setState('idle'); replaceUrl('/entrar'); });
   }, [token, refresh]);
 
   async function submit(e: FormEvent) {
@@ -60,9 +61,9 @@ export function Login({ token }: { token: string | null }) {
               </button>
             ))}
           </div>
-          <a href="/admin" className="mt-3 block text-center text-[13px] font-bold text-bark/70 underline">
+          <Link to="/admin" className="mt-3 block text-center text-[13px] font-bold text-bark/70 underline">
             Ver o painel de métricas{brand.demo.adminPassword ? ` (senha: ${brand.demo.adminPassword})` : ''}
-          </a>
+          </Link>
         </div>
       )}
 

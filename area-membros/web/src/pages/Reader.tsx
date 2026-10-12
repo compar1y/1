@@ -6,7 +6,7 @@ import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url';
 import { Link } from '../components/Link';
 import { OfferCard } from '../components/OfferCard';
 import { OfferSheet } from '../components/OfferSheet';
-import { api, fileUrl } from '../lib/api';
+import { api, downloadStatic, fileUrl, pdfSource, STATIC } from '../lib/api';
 import { useMe } from '../state';
 
 // Build "legacy" do pdf.js: funciona também em celulares mais antigos (Android/iOS desatualizados).
@@ -78,16 +78,20 @@ export default function Reader({ id, item }: { id: string; item?: string }) {
   useEffect(() => {
     if (!d || (item && !it)) return;
     let destroyed = false;
-    const task = pdfjs.getDocument({ url: fileUrl(ref), disableAutoFetch: true, disableStream: true, withCredentials: true });
-    task.promise.then(async (pdf) => {
-      if (destroyed) return;
+    let task: ReturnType<typeof pdfjs.getDocument> | null = null;
+    pdfSource(ref).then((src) => {
+      if (destroyed) return null;
+      task = pdfjs.getDocument({ ...src, disableAutoFetch: true, disableStream: true, withCredentials: true });
+      return task.promise;
+    }).then(async (pdf) => {
+      if (destroyed || !pdf) return;
       const first = await pdf.getPage(1);
       const v = first.getViewport({ scale: 1 });
       setRatio(v.height / v.width);
       setDoc(pdf);
       api('/api/progress', { ref, page: saved?.last_page || it?.page || 1, pages: pdf.numPages }).catch(() => {});
     }).catch(() => !destroyed && setError('Não foi possível abrir o arquivo. Verifique sua internet ou use o botão de baixar.'));
-    return () => { destroyed = true; task.destroy(); };
+    return () => { destroyed = true; task?.destroy(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ref, !!d]);
 
@@ -163,7 +167,7 @@ export default function Reader({ id, item }: { id: string; item?: string }) {
         <button onClick={() => setZoom((z) => (z >= 2 ? 1 : z + 0.5))} aria-label={zoom >= 2 ? 'Diminuir zoom' : 'Aumentar zoom'} className="grid h-10 w-10 place-items-center rounded-full hover:bg-white/10">
           {zoom >= 2 ? <ZoomOut className="h-5 w-5" /> : <ZoomIn className="h-5 w-5" />}
         </button>
-        <a href={fileUrl(ref, true)} download aria-label="Baixar PDF" className="grid h-10 w-10 place-items-center rounded-full hover:bg-white/10"><Download className="h-5 w-5" /></a>
+        <a href={fileUrl(ref, true)} download onClick={async (e) => { if (STATIC) { e.preventDefault(); await downloadStatic(ref); } }} aria-label="Baixar PDF" className="grid h-10 w-10 place-items-center rounded-full hover:bg-white/10"><Download className="h-5 w-5" /></a>
       </header>
 
       {error && <div className="m-4 rounded-2xl bg-white p-4 text-[14px] font-semibold text-red-700">{error}</div>}
